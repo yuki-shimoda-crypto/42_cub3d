@@ -1,6 +1,10 @@
 ---
 name: Question template
 about: Template for questions or inquiries
+title: ''
+labels: ''
+assignees: ''
+
 ---
 
 ### Question summary

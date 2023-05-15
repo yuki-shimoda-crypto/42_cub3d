@@ -1,6 +1,10 @@
 ---
 name: Bug report
 about: Template for reporting bugs or issues
+title: ''
+labels: bug
+assignees: ''
+
 ---
 
 ### Bug summary

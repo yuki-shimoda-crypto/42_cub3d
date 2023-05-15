@@ -1,6 +1,10 @@
 ---
 name: Feature request
 about: Template for new features or improvement suggestions
+title: ''
+labels: enhancement
+assignees: ''
+
 ---
 
 ### Feature summary
@@ -17,4 +21,3 @@ about: Template for new features or improvement suggestions
 
 ### Additional information
 <!-- Include any other information related to the feature request, if applicable -->
-
