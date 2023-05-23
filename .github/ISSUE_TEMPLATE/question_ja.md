@@ -2,7 +2,7 @@
 name: 質問用テンプレート
 about: 質問や疑問に関するテンプレート
 title: ''
-labels: ''
+labels: question
 assignees: ''
 
 ---
