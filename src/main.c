@@ -6,13 +6,12 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/05/24 12:37:39 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/05/24 22:12:55 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include <stdlib.h>
-#include <string.h>
+#include "libft.h"
 
 //void	check_map(t_map *map)
 //{
@@ -40,26 +39,13 @@
 //void	read_file(t_file *file, const char *argv[])
 //{
 //}
-//
-
-void	check_file_name(int argc, const char *argv[])
-{
-	if (argc < 2)
-		exit_error("The file name must be specified.\n");
-	else if (argc > 2)
-		exit_error("Too many argument\n");
-	else if (strlen(argv[1]) < 4)
-		exit_error("The file name is too short to end with .cub\n");
-	else if (strcmp(&argv[1][strlen(argv[1]) - 4], ".cub"))
-		exit_error("The file must end with .cub\n");
-		
-}
 
 int	main(int argc, const char *argv[])
 {
+	t_cub_file_node		*cub_file_node;
+
 	check_file_name(argc, argv);
-//	read_file(&file, argv);
-//	check_file(&file, &map);
-//	check_map(&map);
+	cub_file_node = read_cub_file(argv[1]);
+	free_cub_file_node(cub_file_node);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/05/24 12:51:22 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/05/24 22:13:40 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,55 +18,56 @@
 
 // remove
 #include <string.h>
+#include <stdlib.h>
 
 #define COLOR_RESET	"\033[0m"
 #define COLOR_RED	"\033[31m"
 
-typedef	struct s_data			t_data;
-typedef	struct s_map			t_map;
-typedef	struct s_pos			t_pos;
-typedef	struct s_file_line		t_file_line;
-typedef	struct s_file_status	t_file_status;
-typedef	struct s_file_content_num	t_file_content_num;
+typedef	struct s_game_data			t_game_data;
+typedef	struct s_map_node			t_map_node;
+typedef	struct s_player_pos			t_player_pos;
+typedef	struct s_cub_file_node		t_cub_file_node;
+typedef	struct s_cub_file_status	t_cub_file_status;
+typedef	struct s_cub_file_count		t_cub_file_count;
 
-// save all data after checking
-struct	s_data
+// save all game data after checking
+struct	s_game_data
 {
-	t_map	*map;
-	t_pos	*pos;
-	char	orientation;
-	char	*n_texture;
-	char	*s_texture;
-	char	*w_texture;
-	char	*e_texture;
-	long	f_color[3];
-	long	c_color[3];
+	t_map_node		*map_node;
+	t_player_pos	*player_pos;
+	char			orientation;
+	char			*n_texture;
+	char			*s_texture;
+	char			*w_texture;
+	char			*e_texture;
+	long			f_color[3];
+	long			c_color[3];
 };
 
-// save the map after checking
-struct	s_map
+// save the map node after checking
+struct	s_map_node
 {
-	t_map	*next;
-	t_map	*pre;
+	t_map_node	*next;
+	t_map_node	*pre;
 	char	*line;
 };
 
 // save current location
-struct	s_pos
+struct	s_player_pos
 {
 	size_t	*x;
 	size_t	*y;
 };
 
 // use to read *.cub and check content
-struct	s_file_line
+struct	s_cub_file_node
 {
 	char		*line;
-	t_file_line	*next;
+	t_cub_file_node	*next;
 };
 
-// check file status
-struct	s_file_status
+// check cub file status
+struct	s_cub_file_status
 {
 	bool	n_texture;
 	bool	s_texture;
@@ -77,8 +78,8 @@ struct	s_file_status
 	bool	orientation;
 };
 
-// check file content num
-struct	s_file_content_num
+// check cub file content count
+struct	s_cub_file_count
 {
 	size_t	n_texture;
 	size_t	s_texture;
@@ -92,6 +93,18 @@ struct	s_file_content_num
 	size_t	e;
 };
 
-void	exit_error(const char *s);
+// check
+void			exit_error(const char *s, bool perror_flag);
+
+// error
+void			check_file_name(int argc, const char *argv[]);
+
+// cub_file_node
+void			free_cub_file_node(t_cub_file_node *node);
+t_cub_file_node	*make_cub_file_node(char *line);
+t_cub_file_node	*read_cub_file(const char *filename);
+
+// debug
+void			print_cub_file_node(t_cub_file_node *node);
 
 #endif

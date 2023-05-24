@@ -6,7 +6,7 @@
 #    By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/16 19:51:43 by yshimoda          #+#    #+#              #
-#    Updated: 2023/05/24 12:39:51 by yshimoda         ###   ########.fr        #
+#    Updated: 2023/05/24 22:16:00 by yshimoda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,8 +18,12 @@ INC_DIR		=	include
 LIBFT_DIR	=	libft
 MLX_DIR		=	minilibx-linux
 
-SRCS		=	src/main.c		\
+SRCS		=	src/main.c				\
+				src/check.c				\
+				src/cub_file_node.c		\
+				src/debug.c				\
 				src/error.c
+
 OBJS		=	$(SRCS:%.c=$(OBJ_DIR)/%.o)
 DEBUG_OBJS	=	$(SRCS:%.c=$(DEBUG_DIR)/%.o)
 INCLUDE		=	-I $(INC_DIR)

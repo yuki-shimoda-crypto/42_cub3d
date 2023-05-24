@@ -1,28 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   check.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/23 20:16:28 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/05/24 14:16:46 by yshimoda         ###   ########.fr       */
+/*   Created: 2023/05/24 14:21:57 by yshimoda          #+#    #+#             */
+/*   Updated: 2023/05/24 20:24:42 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+//remove
 #include "cub3d.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
 
-void	exit_error(const char *s, bool perror_flag)
+void	check_file_name(int argc, const char *argv[])
 {
-	write(STDERR_FILENO, COLOR_RED, strlen(COLOR_RED));
-	write(STDERR_FILENO, "Error\n", strlen("Error\n"));
-	write(STDERR_FILENO, COLOR_RESET, strlen(COLOR_RESET));
-	if (s && !perror_flag)
-		write(STDERR_FILENO, s, strlen(s));
-	else if (perror_flag)
-		perror(s);
-	exit(EXIT_FAILURE);
+	if (argc < 2)
+		exit_error("The file name must be specified.\n", false);
+	else if (argc > 2)
+		exit_error("Too many argument\n", false);
+	else if (strlen(argv[1]) < 4)
+		exit_error("The file name is too short to end with .cub\n", false);
+	else if (strcmp(&argv[1][strlen(argv[1]) - 4], ".cub") != 0)
+		exit_error("The file must end with .cub\n", false);
 }
