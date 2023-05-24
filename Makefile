@@ -6,7 +6,7 @@
 #    By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/16 19:51:43 by yshimoda          #+#    #+#              #
-#    Updated: 2023/05/24 22:16:00 by yshimoda         ###   ########.fr        #
+#    Updated: 2023/05/25 01:27:08 by yshimoda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ SRCS		=	src/main.c				\
 
 OBJS		=	$(SRCS:%.c=$(OBJ_DIR)/%.o)
 DEBUG_OBJS	=	$(SRCS:%.c=$(DEBUG_DIR)/%.o)
-INCLUDE		=	-I $(INC_DIR)
+INCLUDE		=	-I $(INC_DIR) -I $(MLX_DIR)
 
 LIBFT		=	$(LIBFT_DIR)/libft.a
 MLX			=	$(MLX_DIR)/libmlx.a

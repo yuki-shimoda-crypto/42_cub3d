@@ -6,29 +6,29 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/05/24 22:13:40 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/05/25 01:23:26 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
-#define CUB3D_H
+# define CUB3D_H
 
-#include <stdbool.h>
-#include <stddef.h>
+# include <stdbool.h>
+# include <stddef.h>
 
 // remove
-#include <string.h>
-#include <stdlib.h>
+# include <string.h>
+# include <stdlib.h>
 
-#define COLOR_RESET	"\033[0m"
-#define COLOR_RED	"\033[31m"
+# define COLOR_RESET	"\033[0m"
+# define COLOR_RED	"\033[31m"
 
-typedef	struct s_game_data			t_game_data;
-typedef	struct s_map_node			t_map_node;
-typedef	struct s_player_pos			t_player_pos;
-typedef	struct s_cub_file_node		t_cub_file_node;
-typedef	struct s_cub_file_status	t_cub_file_status;
-typedef	struct s_cub_file_count		t_cub_file_count;
+typedef struct s_game_data			t_game_data;
+typedef struct s_map_node			t_map_node;
+typedef struct s_player_pos			t_player_pos;
+typedef struct s_cub_file_node		t_cub_file_node;
+typedef struct s_cub_file_status	t_cub_file_status;
+typedef struct s_cub_file_count		t_cub_file_count;
 
 // save all game data after checking
 struct	s_game_data
@@ -49,7 +49,7 @@ struct	s_map_node
 {
 	t_map_node	*next;
 	t_map_node	*pre;
-	char	*line;
+	char		*line;
 };
 
 // save current location
@@ -62,7 +62,7 @@ struct	s_player_pos
 // use to read *.cub and check content
 struct	s_cub_file_node
 {
-	char		*line;
+	char			*line;
 	t_cub_file_node	*next;
 };
 

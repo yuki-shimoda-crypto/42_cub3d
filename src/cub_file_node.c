@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   list.c                                             :+:      :+:    :+:   */
+/*   cub_file_node.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 20:24:27 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/05/24 21:33:10 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/05/25 01:33:27 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 t_cub_file_node	*make_cub_file_node(char *line)
 {
 	t_cub_file_node	*node;
-	
+
 	node = calloc(sizeof(t_cub_file_node), 1);
 	if (!node)
 		exit_error("calloc error\n", false);
