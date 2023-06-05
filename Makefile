@@ -6,7 +6,7 @@
 #    By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/16 19:51:43 by yshimoda          #+#    #+#              #
-#    Updated: 2023/05/25 01:27:08 by yshimoda         ###   ########.fr        #
+#    Updated: 2023/06/04 18:18:07 by yshimoda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,8 @@ MLX_DIR		=	minilibx-linux
 
 SRCS		=	src/main.c				\
 				src/check.c				\
-				src/cub_file_node.c		\
+				src/read_cub_file.c		\
+				src/check_cub_file.c	\
 				src/debug.c				\
 				src/error.c
 

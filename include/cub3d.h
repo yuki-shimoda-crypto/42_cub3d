@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/05/25 01:23:26 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/04 18:16:54 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,14 +87,12 @@ struct	s_cub_file_count
 	size_t	e_texture;
 	size_t	f_color;
 	size_t	c_color;
-	size_t	n;
-	size_t	s;
-	size_t	w;
-	size_t	e;
+	size_t	orientation;
 };
 
 // check
 void			exit_error(const char *s, bool perror_flag);
+void			check_cub_file(t_cub_file_node *node);
 
 // error
 void			check_file_name(int argc, const char *argv[]);
