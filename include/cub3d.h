@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/06 18:18:19 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/06 19:40:46 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ struct	s_game_data
 	char			*s_texture;
 	char			*w_texture;
 	char			*e_texture;
-	int				f_color[3];
-	int				c_color[3];
+	long			f_color[3];
+	long			c_color[3];
 };
 
 // save the map node after checking

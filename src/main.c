@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/05 16:58:44 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/06 19:53:51 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,14 @@ void	init_game_data(t_game_data *data)
 	data->c_color[2] = 0;
 }
 
+void	free_data(t_game_data *data)
+{
+	free(data->n_texture);
+	free(data->s_texture);
+	free(data->w_texture);
+	free(data->e_texture);
+}
+
 int	main(int argc, const char *argv[])
 {
 	t_cub_file_node		*cub_file_node;
@@ -68,5 +76,6 @@ int	main(int argc, const char *argv[])
 	cub_file_node = read_cub_file(argv[1]);
 	check_cub_file(cub_file_node, &data);
 	free_cub_file_node(cub_file_node);
+	free_data(&data);
 	return (0);
 }

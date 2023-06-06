@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 15:56:57 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/06 19:25:19 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/06 19:56:02 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,9 +185,9 @@ static void	input_number(const char *s, t_game_data *data, t_input flag)
 		skip_line(s, &i, SKIP_SPACE_COMMA);
 //		printf("%s\n", &s[i]);
 		if (flag == INPUT_FLOOR)
-			data->f_color[j] = atoi(&s[i]);
+			data->f_color[j] = atol(&s[i]);
 		else
-			data->c_color[j] = atoi(&s[i]);
+			data->c_color[j] = atol(&s[i]);
 		if (!(isdigit(s[i]) || s[i] == '-' || s[i] == '+'))
 			break ;
 		skip_line(s, &i, SKIP_NUM);
@@ -208,10 +208,21 @@ void	input_color(t_cub_file_node *node, t_game_data *data)
 	input_number(line, data, INPUT_CEILING);
 }
 
-//void	check_color()
-//{
-//	
-//}
+void	is_under_0_over_255(long num)
+{
+	if (num < 0 || 255 < num)
+		exit_error("RGB values must range from 0 to 255\n", false);
+}
+
+void	check_color(t_game_data *data)
+{
+	is_under_0_over_255(data->f_color[0]);
+	is_under_0_over_255(data->f_color[1]);
+	is_under_0_over_255(data->f_color[2]);
+	is_under_0_over_255(data->c_color[0]);
+	is_under_0_over_255(data->c_color[1]);
+	is_under_0_over_255(data->c_color[2]);
+}
 
 void	check_cub_file(t_cub_file_node *node, t_game_data *data)
 {
@@ -221,14 +232,13 @@ void	check_cub_file(t_cub_file_node *node, t_game_data *data)
 	count_file_element(node, &count);
 	check_file_element(&count);
 	input_texture_file(node, data);
-//	check_texture_file();
-	input_color(node, data);
-//	check_color(data);
-	printf("%d\n", data->f_color[0]);
-	printf("%d\n", data->f_color[1]);
-	printf("%d\n", data->f_color[2]);
-	printf("%d\n", data->c_color[0]);
-	printf("%d\n", data->c_color[1]);
-	printf("%d\n", data->c_color[2]);
 //	check_texture_file(data);
+	input_color(node, data);
+	check_color(data);
+	printf("%ld\n", data->f_color[0]);
+	printf("%ld\n", data->f_color[1]);
+	printf("%ld\n", data->f_color[2]);
+	printf("%ld\n", data->c_color[0]);
+	printf("%ld\n", data->c_color[1]);
+	printf("%ld\n", data->c_color[2]);
 }
