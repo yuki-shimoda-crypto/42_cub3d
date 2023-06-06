@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/04 18:16:54 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/06 18:18:19 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ typedef struct s_player_pos			t_player_pos;
 typedef struct s_cub_file_node		t_cub_file_node;
 typedef struct s_cub_file_status	t_cub_file_status;
 typedef struct s_cub_file_count		t_cub_file_count;
+typedef enum e_skip					t_skip;
+typedef enum e_input				t_input;
 
 // save all game data after checking
 struct	s_game_data
@@ -40,8 +42,8 @@ struct	s_game_data
 	char			*s_texture;
 	char			*w_texture;
 	char			*e_texture;
-	long			f_color[3];
-	long			c_color[3];
+	int				f_color[3];
+	int				c_color[3];
 };
 
 // save the map node after checking
@@ -90,9 +92,21 @@ struct	s_cub_file_count
 	size_t	orientation;
 };
 
+enum	e_skip
+{
+	SKIP_NUM,
+	SKIP_SPACE_COMMA,
+};
+
+enum	e_input
+{
+	INPUT_FLOOR,
+	INPUT_CEILING,
+};
+
 // check
 void			exit_error(const char *s, bool perror_flag);
-void			check_cub_file(t_cub_file_node *node);
+void			check_cub_file(t_cub_file_node *node, t_game_data *data);
 
 // error
 void			check_file_name(int argc, const char *argv[]);

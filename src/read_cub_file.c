@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub_file_node.c                                    :+:      :+:    :+:   */
+/*   read_cub_file.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 20:24:27 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/05/25 01:33:27 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/05 19:15:17 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,16 @@ void	free_cub_file_node(t_cub_file_node *node)
 	}
 }
 
+void	newline_to_null(char *line)
+{
+	while (*line)
+	{
+		if (*line == '\n')
+			*line = '\0';
+		line++;
+	}
+}
+
 t_cub_file_node	*read_cub_file(const char *filename)
 {
 	int				fd;
@@ -55,6 +65,7 @@ t_cub_file_node	*read_cub_file(const char *filename)
 		line = get_next_line(fd);
 		if (!line)
 			break ;
+		newline_to_null(line);
 		node->next = make_cub_file_node(line);
 		node = node->next;
 	}
