@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/06 19:40:46 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/07 16:37:15 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,17 @@ void			free_cub_file_node(t_cub_file_node *node);
 t_cub_file_node	*make_cub_file_node(char *line);
 t_cub_file_node	*read_cub_file(const char *filename);
 
+// make_map
+size_t			lst_map_size(t_map_node *map);
+void			map_node_clear(t_map_node **map);
+t_map_node		*map_node_last(t_map_node *map);
+void			map_node_addback(t_map_node **map, t_map_node *next);
+t_map_node		*map_node_new(char *str);
+
 // debug
 void			print_cub_file_node(t_cub_file_node *node);
+void			print_texture(t_game_data *data);
+void			print_color(t_game_data *data);
+void			print_map(t_map_node *map);
 
 #endif

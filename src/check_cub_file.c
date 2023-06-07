@@ -6,13 +6,15 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 15:56:57 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/06 19:56:02 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/07 16:36:51 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 #include <ctype.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 void	count_inc(t_cub_file_count *count, const char *s)
 {
@@ -101,11 +103,7 @@ void	init_cub_file_count(t_cub_file_count *count)
 	count->orientation = 0;
 }
 
-// void	check_texture_file(t_cub_file_node *node, t_game_data *data)
-// {
-// }
-
-char	*dup_texture_name(t_cub_file_node *node, const char *s)
+static char	*dup_texture_name(t_cub_file_node *node, const char *s)
 {
 	char	*texture;
 	size_t	i;
@@ -133,9 +131,23 @@ void	input_texture_file(t_cub_file_node *node, t_game_data *data)
 	data->e_texture = dup_texture_name(node, "EA");
 }
 
-// char	*extract_number()
-// {
-// }
+static void	can_open_texture(const char *s)
+{
+	int	fd;
+
+	fd = open(s, O_RDONLY);
+	if (fd == -1)
+		exit_error(s, true);
+	close(fd);
+}
+
+void	check_texture_file(t_game_data *data)
+{
+	can_open_texture(data->n_texture);
+	can_open_texture(data->s_texture);
+	can_open_texture(data->w_texture);
+	can_open_texture(data->e_texture);
+}
 
 char	*extract_line(t_cub_file_node *node, const char *s)
 {
@@ -224,6 +236,60 @@ void	check_color(t_game_data *data)
 	is_under_0_over_255(data->c_color[2]);
 }
 
+bool	is_texture_color(const char *line)
+{
+	if (!strncmp(line, "F", 1))
+		return (true);
+	else if (!strncmp(line, "C", 1))
+		return (true);
+	else if (!strncmp(line, "NO", 2))
+		return (true);
+	else if (!strncmp(line, "SO", 2))
+		return (true);
+	else if (!strncmp(line, "WE", 2))
+		return (true);
+	else if (!strncmp(line, "EA", 2))
+		return (true);
+	return (false);
+}
+
+t_map_node	*make_map(t_cub_file_node *node)
+{
+	t_map_node	*map;
+	t_map_node	*new_map;
+
+	map = NULL;
+	while (node)
+	{
+		new_map = map_node_new(node->line);
+		map_node_addback(&map, new_map);
+		node = node->next;
+	}
+	return (map);
+}
+
+static t_cub_file_node	*skip_to_map(t_cub_file_node *node)
+{
+	size_t	i;
+	
+	i = 0;
+	while (node)
+	{
+		if (i >= 6 && node->line[0] != '\0')
+			break ;
+		if (is_texture_color(node->line))
+			i++;
+		node = node->next;
+	}
+	return (node);
+}
+
+void	input_map(t_cub_file_node *node, t_game_data *data)
+{
+	node = skip_to_map(node);
+	data->map_node = make_map(node);
+}
+
 void	check_cub_file(t_cub_file_node *node, t_game_data *data)
 {
 	t_cub_file_count	count;
@@ -232,13 +298,11 @@ void	check_cub_file(t_cub_file_node *node, t_game_data *data)
 	count_file_element(node, &count);
 	check_file_element(&count);
 	input_texture_file(node, data);
-//	check_texture_file(data);
+	check_texture_file(data);
 	input_color(node, data);
 	check_color(data);
-	printf("%ld\n", data->f_color[0]);
-	printf("%ld\n", data->f_color[1]);
-	printf("%ld\n", data->f_color[2]);
-	printf("%ld\n", data->c_color[0]);
-	printf("%ld\n", data->c_color[1]);
-	printf("%ld\n", data->c_color[2]);
+	input_map(node, data);
+	print_texture(data);
+	print_color(data);
+	print_map(data->map_node);
 }
