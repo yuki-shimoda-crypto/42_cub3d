@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 20:57:09 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/07 16:36:41 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/08 20:48:24 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,11 @@ void	print_texture(t_game_data *data)
 
 void	print_color(t_game_data *data)
 {
-	printf("F %3ld, %3ld, %3ld\n", data->f_color[0], data->f_color[1], data->f_color[2]);
-	printf("C %3ld, %3ld, %3ld\n", data->c_color[0], data->c_color[1], data->c_color[2]);
+	printf("F %3ld, %3ld, %3ld\n", data->f_color[0],
+		data->f_color[1], data->f_color[2]);
+	printf("C %3ld, %3ld, %3ld\n", data->c_color[0],
+		data->c_color[1], data->c_color[2]);
 }
-
 
 void	print_map(t_map_node *map)
 {

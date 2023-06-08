@@ -6,14 +6,14 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 15:30:28 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/07 16:21:29 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/08 20:44:57 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 #include <stdlib.h>
 
-size_t	lst_map_size(t_map_node *map)
+size_t	map_size(t_map_node *map)
 {
 	size_t	i;
 

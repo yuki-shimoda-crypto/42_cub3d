@@ -6,15 +6,19 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 20:24:27 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/05 19:15:17 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/08 20:52:12 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 #include "libft.h"
 #include <fcntl.h>
+#include <unistd.h>
 
-t_cub_file_node	*make_cub_file_node(char *line)
+//remove to import calloc
+#include <stdlib.h>
+
+static t_cub_file_node	*make_cub_file_node(char *line)
 {
 	t_cub_file_node	*node;
 
@@ -25,20 +29,7 @@ t_cub_file_node	*make_cub_file_node(char *line)
 	return (node);
 }
 
-void	free_cub_file_node(t_cub_file_node *node)
-{
-	t_cub_file_node	*next;
-
-	while (node)
-	{
-		next = node->next;
-		free(node->line);
-		free(node);
-		node = next;
-	}
-}
-
-void	newline_to_null(char *line)
+static void	newline_to_null(char *line)
 {
 	while (*line)
 	{
