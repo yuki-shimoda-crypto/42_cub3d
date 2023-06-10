@@ -6,7 +6,7 @@
 #    By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/16 19:51:43 by yshimoda          #+#    #+#              #
-#    Updated: 2023/06/08 20:58:50 by yshimoda         ###   ########.fr        #
+#    Updated: 2023/06/08 22:49:41 by yshimoda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ SRCS		=	src/check_color.c				\
 				src/check_cub_file.c			\
 				src/check_file_element.c		\
 				src/check_file_name.c			\
+				src/check_map.c					\
 				src/check_texture_file.c		\
 				src/count_file_element.c		\
 				src/debug.c						\

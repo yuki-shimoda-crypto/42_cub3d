@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/08 20:59:45 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/08 22:49:24 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ struct	s_cub_file_count
 	size_t	e_texture;
 	size_t	f_color;
 	size_t	c_color;
-	size_t	orientation;
 };
 
 enum	e_skip
@@ -108,6 +107,7 @@ void			check_color(t_game_data *data);
 void			check_cub_file(t_cub_file_node *node, t_game_data *data);
 void			check_file_element(t_cub_file_count *count);
 void			check_file_name(int argc, const char *argv[]);
+void			check_map(t_map_node *map);
 void			check_texture_file(t_game_data *data);
 void			count_file_element(t_cub_file_node *node,
 					t_cub_file_count *count);
