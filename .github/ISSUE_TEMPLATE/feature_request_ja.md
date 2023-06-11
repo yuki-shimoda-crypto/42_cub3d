@@ -2,7 +2,7 @@
 name: 機能リクエスト
 about: 新しい機能や改善提案に関するテンプレート
 title: ''
-labels: ''
+labels: enhancement
 assignees: ''
 
 ---
