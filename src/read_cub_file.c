@@ -1,20 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub_file_node.c                                    :+:      :+:    :+:   */
+/*   read_cub_file.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 20:24:27 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/05/25 01:33:27 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/08 20:52:12 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 #include "libft.h"
 #include <fcntl.h>
+#include <unistd.h>
 
-t_cub_file_node	*make_cub_file_node(char *line)
+//remove to import calloc
+#include <stdlib.h>
+
+static t_cub_file_node	*make_cub_file_node(char *line)
 {
 	t_cub_file_node	*node;
 
@@ -25,16 +29,13 @@ t_cub_file_node	*make_cub_file_node(char *line)
 	return (node);
 }
 
-void	free_cub_file_node(t_cub_file_node *node)
+static void	newline_to_null(char *line)
 {
-	t_cub_file_node	*next;
-
-	while (node)
+	while (*line)
 	{
-		next = node->next;
-		free(node->line);
-		free(node);
-		node = next;
+		if (*line == '\n')
+			*line = '\0';
+		line++;
 	}
 }
 
@@ -55,6 +56,7 @@ t_cub_file_node	*read_cub_file(const char *filename)
 		line = get_next_line(fd);
 		if (!line)
 			break ;
+		newline_to_null(line);
 		node->next = make_cub_file_node(line);
 		node = node->next;
 	}

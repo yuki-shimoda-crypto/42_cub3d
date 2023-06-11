@@ -15,4 +15,4 @@ jobs:
 
       - name: run norminette
         run: |
-          norminette norminette libft include src
+          norminette libft include src
