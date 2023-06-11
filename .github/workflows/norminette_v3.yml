@@ -15,6 +15,4 @@ jobs:
 
       - name: run norminette
         run: |
-          norminette
-          norminette -R CheckForbiddenSourceHeader
-          norminette -R CheckDefine
+          norminette norminette libft include src
