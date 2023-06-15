@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 21:03:01 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/10 19:21:12 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/12 18:38:16 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,5 @@ static void	check_map_characters(t_map_node *map)
 void	check_map(t_map_node *map)
 {
 	check_map_characters(map);
+	check_map_surrounded_by_walls(map);
 }

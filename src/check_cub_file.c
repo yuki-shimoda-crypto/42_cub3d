@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 15:56:57 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/08 22:51:36 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/12 18:56:28 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	check_cub_file(t_cub_file_node *node, t_game_data *data)
 	check_color(data);
 	input_map(node, data);
 	check_map(data->map_node);
-	print_texture(data);
-	print_color(data);
-	print_map(data->map_node);
+//	print_texture(data);
+//	print_color(data);
+//	print_map(data->map_node);
 }

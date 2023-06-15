@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/08 22:49:24 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/12 21:38:17 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include <ctype.h>
 
 # define COLOR_RESET	"\033[0m"
-# define COLOR_RED	"\033[31m"
+# define COLOR_RED		"\033[31m"
 
 typedef struct s_game_data			t_game_data;
 typedef struct s_map_node			t_map_node;
@@ -29,6 +29,7 @@ typedef struct s_player_pos			t_player_pos;
 typedef struct s_cub_file_node		t_cub_file_node;
 typedef struct s_cub_file_status	t_cub_file_status;
 typedef struct s_cub_file_count		t_cub_file_count;
+typedef struct s_queue				t_queue;
 typedef enum e_skip					t_skip;
 typedef enum e_input				t_input;
 
@@ -52,6 +53,7 @@ struct	s_map_node
 	t_map_node	*next;
 	t_map_node	*pre;
 	char		*line;
+	size_t		size;
 };
 
 // save current location
@@ -91,6 +93,13 @@ struct	s_cub_file_count
 	size_t	c_color;
 };
 
+struct	s_queue
+{
+	size_t	x;
+	size_t	y;
+	t_queue	*next;
+};
+
 enum	e_skip
 {
 	SKIP_NUM,
@@ -108,6 +117,7 @@ void			check_cub_file(t_cub_file_node *node, t_game_data *data);
 void			check_file_element(t_cub_file_count *count);
 void			check_file_name(int argc, const char *argv[]);
 void			check_map(t_map_node *map);
+void			check_map_surrounded_by_walls(t_map_node *map);
 void			check_texture_file(t_game_data *data);
 void			count_file_element(t_cub_file_node *node,
 					t_cub_file_count *count);
@@ -115,8 +125,6 @@ void			exit_error(const char *s, bool perror_flag);
 void			input_color(t_cub_file_node *node, t_game_data *data);
 void			input_map(t_cub_file_node *node, t_game_data *data);
 void			input_texture_file(t_cub_file_node *node, t_game_data *data);
-void			free_cub_file_node(t_cub_file_node *node);
-void			free_data(t_game_data *data);
 size_t			map_size(t_map_node *map);
 void			map_node_clear(t_map_node **map);
 t_map_node		*map_node_last(t_map_node *map);
@@ -124,10 +132,19 @@ void			map_node_addback(t_map_node **map, t_map_node *next);
 t_map_node		*map_node_new(char *str);
 t_cub_file_node	*read_cub_file(const char *filename);
 
-// debug;
+// debug
 void			print_cub_file_node(t_cub_file_node *node);
 void			print_texture(t_game_data *data);
 void			print_color(t_game_data *data);
 void			print_map(t_map_node *map);
+
+// free
+void			free_cub_file_node(t_cub_file_node *node);
+void			free_map(t_map_node *map);
+void			free_data(t_game_data *data);
+
+// queue
+void			enqueue(t_queue **queue, size_t x, size_t y);
+void			dequeue(t_queue **queue);
 
 #endif
