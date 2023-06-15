@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/12 21:38:17 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/15 16:14:41 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,5 +146,12 @@ void			free_data(t_game_data *data);
 // queue
 void			enqueue(t_queue **queue, size_t x, size_t y);
 void			dequeue(t_queue **queue);
+
+// can move
+t_map_node		*move_map_row(t_map_node *map, size_t y);
+bool			can_move_right(t_map_node *map, size_t x, size_t y);
+bool			can_move_left(t_map_node *map, size_t x, size_t y);
+bool			can_move_down(t_map_node *map, size_t x, size_t y);
+bool			can_move_up(t_map_node *map, size_t x, size_t y);
 
 #endif
