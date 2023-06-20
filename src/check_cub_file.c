@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 15:56:57 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/08 21:00:24 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/15 16:08:30 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ static void	init_cub_file_count(t_cub_file_count *count)
 	count->e_texture = 0;
 	count->f_color = 0;
 	count->c_color = 0;
-	count->orientation = 0;
 }
 
 void	check_cub_file(t_cub_file_node *node, t_game_data *data)
@@ -35,7 +34,9 @@ void	check_cub_file(t_cub_file_node *node, t_game_data *data)
 	input_color(node, data);
 	check_color(data);
 	input_map(node, data);
-	print_texture(data);
-	print_color(data);
-	print_map(data->map_node);
+	check_map(data->map_node);
 }
+
+//	print_texture(data);
+//	print_color(data);
+//	print_map(data->map_node);

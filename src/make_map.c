@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 15:30:28 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/08 20:44:57 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/12 18:42:36 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,9 @@ t_map_node	*map_node_new(char *str)
 	map = malloc(sizeof(t_map_node));
 	if (!map)
 		exit_error(NULL, true);
-	map->line = str;
 	map->pre = NULL;
 	map->next = NULL;
+	map->line = map_line;
+	map->size = strlen(str);
 	return (map);
 }

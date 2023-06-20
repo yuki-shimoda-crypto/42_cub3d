@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 19:02:02 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/08 19:11:31 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/10 12:35:30 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,6 @@ void	input_map(t_cub_file_node *node, t_game_data *data)
 {
 	node = skip_to_map(node);
 	data->map_node = make_map(node);
+	if (!data->map_node)
+		exit_error("Map is required\n", false);
 }
