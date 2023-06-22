@@ -6,11 +6,11 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/15 16:10:41 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/15 16:11:28 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/22 13:38:36 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3D.h"
+#include "cub3d.h"
 
 t_map_node	*move_map_row(t_map_node *map, size_t y)
 {

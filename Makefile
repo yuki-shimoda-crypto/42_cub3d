@@ -6,7 +6,7 @@
 #    By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/16 19:51:43 by yshimoda          #+#    #+#              #
-#    Updated: 2023/06/12 18:59:21 by yshimoda         ###   ########.fr        #
+#    Updated: 2023/06/22 13:56:34 by yshimoda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,8 @@ INC_DIR		=	include
 LIBFT_DIR	=	libft
 MLX_DIR		=	minilibx-linux
 
-SRCS		=	src/check_color.c						\
+SRCS		=	src/can_move.c							\
+				src/check_color.c						\
 				src/check_cub_file.c					\
 				src/check_file_element.c				\
 				src/check_file_name.c					\
@@ -48,7 +49,8 @@ MLX			=	$(MLX_DIR)/libmlx.a
 LIBS		=	$(LIBFT) $(MLX)
 
 CC			=	cc
-CFLAGS		=	-Wall -Wextra -Werror
+# CFLAGS		=	-Wall -Wextra -Werror
+CFLAGS		=	-Wall -Wextra 
 DEBUG_FLUG	=	-g -fsanitize=address -fsanitize=undefined
 
 ALLOW_FUNC	=	open|close|read|write|printf|malloc|free|perror|strerror|exit
@@ -57,6 +59,7 @@ NORM		=	norminette
 ifeq ($(shell uname -s), Linux)
 DEBUG_FLUG		+=	-fsanitize=leak
 CHECK_FUNC	=	nm -u $(NAME) | grep -vwE "U ($(ALLOW_FUNC))"
+LIBS		+=	-lXext -lX11
 else
 CHECK_FUNC	=	nm -u $(NAME) | grep -vwE "_($(ALLOW_FUNC))"
 endif
@@ -112,13 +115,13 @@ $(DEBUG_DIR)/%.o:%.c
 			@mkdir -p $(@D)
 			$(CCACHE) $(CC) $(CFLAGS) $(DEBUG_FLUG) $(INCLUDE) -c $< -o $@
 
-$(NAME):	$(LIBFT) $(OBJS) $(MLX)
+$(NAME):	$(LIBFT) $(MLX) $(OBJS)
 			$(CCACHE) $(CC) $(CFLAGS) $(INCLUDE) -o $(NAME) $(OBJS) $(LIBS)
 
 $(LIBFT):
 			$(MAKE) -C $(LIBFT_DIR)
 
-$(MLX):
+$(MLX):	
 			$(MAKE) -C $(MLX_DIR)
 
 all:	$(NAME)
