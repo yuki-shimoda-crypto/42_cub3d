@@ -45,38 +45,106 @@
 // 	return (0);
 // }
 
+// #include <stdio.h>
+// #include <mlx.h>
+// 
+// #define WIN_WIDTH 640
+// #define WIN_HEIGHT 480
+// 
+// #define MAP_WIDTH 24
+// #define MAP_HEIGHT 24
+// 
+// #define TILE_SIZE 20 // Size of each square tile (20 pixels in this case)
+// 
+// void	*safe_mlx_new_window(void *mlx_ptr, int size_x, int size_y, char *title)
+// {
+// 	void	*mlx_ptr_win;
+// 
+// 	mlx_ptr_win = mlx_new_window(mlx_ptr, size_x, size_y, title);
+// 	if (!mlx_ptr_win)
+// 		exit_error("mlx new window is failed\n", false);
+// 	return (mlx_ptr_win);
+// }
+// 
+// void	*safe_mlx_init(void)
+// {
+// 	void	*mlx_ptr;
+// 
+// 	mlx_ptr = mlx_init();
+// 	if (!mlx_ptr)
+// 		exit_error("mlx init is failed\n", false);
+// 	return (mlx_ptr);
+// }
+
+// int worldMap[MAP_HEIGHT][MAP_WIDTH] = {
+//    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+// };
+
+//int main()
+//{
+//	void *mlx_ptr;
+//	void *mlx_win_ptr;
+//	
+//	mlx_ptr = safe_mlx_init();
+//	mlx_win_ptr = safe_mlx_new_window(mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "Raycaster");
+//	for (int y = 0; y < MAP_HEIGHT; y++)
+//	{
+//	  for (int x = 0; x < MAP_WIDTH; x++)
+//	  {
+//	    if (worldMap[y][x] == 0)
+//	    {
+//	      mlx_pixel_put(mlx_ptr, mlx_win_ptr, x*TILE_SIZE, y*TILE_SIZE, 0x00FF0000);
+//	    }
+//	    else if (worldMap[y][x] == 1)
+//	    {
+//	      mlx_pixel_put(mlx_ptr, mlx_win_ptr, x*TILE_SIZE, y*TILE_SIZE, 0x0000FF00);
+//	    }
+//	  }
+//	}
+//	mlx_loop(mlx_ptr);
+//	return 0;
+//}
+
+
 #include <stdio.h>
-#include <mlx.h>
+#include <math.h>
 
-#define WIN_WIDTH 640
-#define WIN_HEIGHT 480
+#define TILE_SIZE 64
+#define WINDOW_WIDTH (MAP_NUM_COLS * TILE_SIZE)
+#define WINDOW_HEIGHT (MAP_NUM_ROWS * TILE_SIZE)
+#define MAP_NUM_ROWS 13
+#define MAP_NUM_COLS 20
+#define NUM_RAYS WINDOW_WIDTH
+// #define FOV_ANGLE (60 * (M_PI / 180))
 
-#define MAP_WIDTH 24
-#define MAP_HEIGHT 24
+int		player.x = WINDOW_WIDTH / 2;
+int		player.y = WINDOW_HEIGHT / 2;
+float	player.rotationAngle = PI / 2;
 
-#define TILE_SIZE 20 // Size of each square tile (20 pixels in this case)
-
-void	*safe_mlx_new_window(void *mlx_ptr, int size_x, int size_y, char *title)
-{
-	void	*mlx_ptr_win;
-
-	mlx_ptr_win = mlx_new_window(mlx_ptr, size_x, size_y, title);
-	if (!mlx_ptr_win)
-		exit_error("mlx new window is failed\n", false);
-	return (mlx_ptr_win);
-}
-
-void	*safe_mlx_init(void)
-{
-	void	*mlx_ptr;
-
-	mlx_ptr = mlx_init();
-	if (!mlx_ptr)
-		exit_error("mlx init is failed\n", false);
-	return (mlx_ptr);
-}
-
-int worldMap[MAP_HEIGHT][MAP_WIDTH] = {
+int map[MAP_NUM_ROWS][MAP_NUM_COLS] = {
    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -103,27 +171,21 @@ int worldMap[MAP_HEIGHT][MAP_WIDTH] = {
    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
 
-int main()
-{
-  void *mlx_ptr;
-  void *mlx_win_ptr;
+typedef struct  {
+    float x;
+    float y;
+    float width;
+    float height;
+} Player;
 
-  mlx_ptr = safe_mlx_init();
-  mlx_win_ptr = safe_mlx_new_window(mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "Raycaster");
-  for (int y = 0; y < MAP_HEIGHT; y++)
-  {
-    for (int x = 0; x < MAP_WIDTH; x++)
-    {
-      if (worldMap[y][x] == 0)
-      {
-        mlx_pixel_put(mlx_ptr, mlx_win_ptr, x*TILE_SIZE, y*TILE_SIZE, 0x00FF0000);
-      }
-      else if (worldMap[y][x] == 1)
-      {
-        mlx_pixel_put(mlx_ptr, mlx_win_ptr, x*TILE_SIZE, y*TILE_SIZE, 0x0000FF00);
-      }
-    }
-  }
-  mlx_loop(mlx_ptr);
-  return 0;
-}
+typedef struct {
+    float x;
+    float y;
+    float ray_angle;
+    float distance;
+    int is_vertical;
+} Ray;
+
+Player player;
+Ray rays[WINDOW_WIDTH];
+
