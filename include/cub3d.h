@@ -23,6 +23,29 @@
 # define COLOR_RESET	"\033[0m"
 # define COLOR_RED		"\033[31m"
 
+# define CLUSTER
+# ifdef CLUSTER
+#  define KEY_LEFT 123
+#  define KEY_UP 126
+#  define KEY_RIGHT 124
+#  define KEY_DOWN 125
+#  define KEY_ESC 53
+#  define KEY_W 13
+#  define KEY_A 0
+#  define KEY_S 1
+#  define KEY_D 2
+# else
+#  define KEY_LEFT 65361
+#  define KEY_UP 65362
+#  define KEY_RIGHT 65363
+#  define KEY_DOWN 65364
+#  define KEY_ESC 65307
+#  define KEY_W 'w'
+#  define KEY_A 'a'
+#  define KEY_S 's'
+#  define KEY_D 'd'
+# endif
+
 typedef struct s_game_data			t_game_data;
 typedef struct s_map_node			t_map_node;
 typedef struct s_player_pos			t_player_pos;

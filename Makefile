@@ -44,13 +44,14 @@ OBJS		=	$(SRCS:%.c=$(OBJ_DIR)/%.o)
 DEBUG_OBJS	=	$(SRCS:%.c=$(DEBUG_DIR)/%.o)
 INCLUDE		=	-I $(INC_DIR) -I $(MLX_DIR)
 
+MATH		=	-lm
 LIBFT		=	$(LIBFT_DIR)/libft.a
-MLX			=	$(MLX_DIR)/libmlx.a
-LIBS		=	$(LIBFT) $(MLX)
+MLX_LINUX	=	$(MLX_DIR)/libmlx.a
+LIBS		=	$(MATH) $(LIBFT) $(MLX)
 
 CC			=	cc
 # CFLAGS		=	-Wall -Wextra -Werror
-CFLAGS		=	-Wall -Wextra 
+CFLAGS		=	-Wall -Wextra
 DEBUG_FLUG	=	-g -fsanitize=address -fsanitize=undefined
 
 ALLOW_FUNC	=	open|close|read|write|printf|malloc|free|perror|strerror|exit
@@ -59,9 +60,10 @@ NORM		=	norminette
 ifeq ($(shell uname -s), Linux)
 DEBUG_FLUG		+=	-fsanitize=leak
 CHECK_FUNC	=	nm -u $(NAME) | grep -vwE "U ($(ALLOW_FUNC))"
-LIBS		+=	-lXext -lX11
+LIBS		+=	$(MLX) -lXext -lX11
 else
 CHECK_FUNC	=	nm -u $(NAME) | grep -vwE "_($(ALLOW_FUNC))"
+LIBS		+=	-lmlx -framework OpenGL -framework AppKit
 endif
 
 ifneq ($(shell command -v ccache), )
