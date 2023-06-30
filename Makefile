@@ -6,7 +6,7 @@
 #    By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/16 19:51:43 by yshimoda          #+#    #+#              #
-#    Updated: 2023/06/22 13:56:34 by yshimoda         ###   ########.fr        #
+#    Updated: 2023/06/30 15:16:59 by yshimoda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,8 @@ SRCS		=	src/can_move.c							\
 				src/main.c								\
 				src/make_map.c							\
 				src/read_cub_file.c						\
-				src/queue.c
+				src/queue.c								\
+				src/safe_mlx.c
 
 
 

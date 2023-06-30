@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/15 16:14:41 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/06/30 15:57:46 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,5 +176,9 @@ bool			can_move_right(t_map_node *map, size_t x, size_t y);
 bool			can_move_left(t_map_node *map, size_t x, size_t y);
 bool			can_move_down(t_map_node *map, size_t x, size_t y);
 bool			can_move_up(t_map_node *map, size_t x, size_t y);
+
+// safe mlx
+void	*safe_mlx_new_window(void *mlx_ptr, int size_x, int size_y, char *title);
+void	*safe_mlx_init(void);
 
 #endif
