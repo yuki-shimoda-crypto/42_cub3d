@@ -6,7 +6,7 @@
 #    By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/16 19:51:43 by yshimoda          #+#    #+#              #
-#    Updated: 2023/06/30 15:16:59 by yshimoda         ###   ########.fr        #
+#    Updated: 2023/07/04 22:13:51 by yshimoda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,15 +39,13 @@ SRCS		=	src/can_move.c							\
 				src/queue.c								\
 				src/safe_mlx.c
 
-
-
 OBJS		=	$(SRCS:%.c=$(OBJ_DIR)/%.o)
 DEBUG_OBJS	=	$(SRCS:%.c=$(DEBUG_DIR)/%.o)
 INCLUDE		=	-I $(INC_DIR) -I $(MLX_DIR)
 
 MATH		=	-lm
 LIBFT		=	$(LIBFT_DIR)/libft.a
-MLX_LINUX	=	$(MLX_DIR)/libmlx.a
+MLX			=	$(MLX_DIR)/libmlx.a
 LIBS		=	$(MATH) $(LIBFT) $(MLX)
 
 CC			=	cc
@@ -61,7 +59,7 @@ NORM		=	norminette
 ifeq ($(shell uname -s), Linux)
 DEBUG_FLUG		+=	-fsanitize=leak
 CHECK_FUNC	=	nm -u $(NAME) | grep -vwE "U ($(ALLOW_FUNC))"
-LIBS		+=	$(MLX) -lXext -lX11
+LIBS		+=	-lXext -lX11
 else
 CHECK_FUNC	=	nm -u $(NAME) | grep -vwE "_($(ALLOW_FUNC))"
 LIBS		+=	-lmlx -framework OpenGL -framework AppKit
