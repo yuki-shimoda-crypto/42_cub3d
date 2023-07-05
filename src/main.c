@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/05 23:18:04 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/05 23:39:37 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,7 +309,7 @@
 // 	mlx_loop(mlx.mlx_ptr);
 // }
 
-#define TILE_SIZE		64
+#define TILE_SIZE		48
 #define MAP_HEIGHT		16
 #define MAP_WIDTH		16
 
@@ -325,9 +325,11 @@
 
 #define SPACE			0
 #define WALL			1
+#define PLAYER			2
 
 #define COLOR_SPACE		0xFFFFFF
 #define COLOR_WALL		0x777777
+#define COLOR_PLAYER	0xFF0000
 
 // #define NUM_RAYS WINDOW_WIDTH
 // #define FOV_ANGLE (60 * (M_PI / 180))
@@ -345,7 +347,7 @@ int map[MAP_HEIGHT][MAP_WIDTH] = {
    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
    {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
    {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
-   {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
+   {1,0,0,0,2,0,0,1,1,0,0,0,0,0,0,1},
    {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
    {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
    {1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1},
@@ -359,31 +361,33 @@ int map[MAP_HEIGHT][MAP_WIDTH] = {
    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
 
-void	draw_cell(t_mlx *mlx, size_t x, size_t y)
+void	draw_cell(t_mlx *mlx, size_t cell_x, size_t cell_y)
 {
-	size_t	x_start;
-	size_t	y_start;
-	size_t	x_end;
-	size_t	y_end;
-	size_t	x_save_start;
+	size_t	pixel_x;
+	size_t	pixel_y;
+	size_t	pixel_x_end;
+	size_t	pixel_y_end;
+	size_t	pixel_x_start;
 
-	x_start = x * MINIMAP_TILE + (WINDOW_WIDTH - MINIMAP_WIDTH);
-	y_start = y * MINIMAP_TILE + (WINDOW_HEIGHT - MINIMAP_HEIGHT);
-	x_end = x_start + MINIMAP_TILE;
-	y_end = y_start + MINIMAP_TILE;
-	x_save_start = x_start;
-	while (y_start < y_end)
+	pixel_x = cell_x * MINIMAP_TILE + (WINDOW_WIDTH - MINIMAP_WIDTH);
+	pixel_y = cell_y * MINIMAP_TILE + (WINDOW_HEIGHT - MINIMAP_HEIGHT);
+	pixel_x_end = pixel_x + MINIMAP_TILE;
+	pixel_y_end = pixel_y + MINIMAP_TILE;
+	pixel_x_start = pixel_x;
+	while (pixel_y < pixel_y_end)
 	{
-		x_start = x_save_start;
-		while (x_start < x_end)
+		pixel_x = pixel_x_start;
+		while (pixel_x < pixel_x_end)
 		{
-			if (map[y][x] == WALL)
-				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x_start, y_start, COLOR_WALL);
-			else if (map[y][x] == SPACE)
-				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x_start, y_start, COLOR_SPACE);
-			x_start++;
+			if (map[cell_y][cell_x] == WALL)
+				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_WALL);
+			else if (map[cell_y][cell_x] == SPACE)
+				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_SPACE);
+			else if (map[cell_y][cell_x] == PLAYER)
+				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_PLAYER);
+			pixel_x++;
 		}
-		y_start++;
+		pixel_y++;
 	}
 }
 
