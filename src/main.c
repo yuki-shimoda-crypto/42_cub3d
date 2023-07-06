@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/05 23:39:37 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/06 20:25:56 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,6 +309,9 @@
 // 	mlx_loop(mlx.mlx_ptr);
 // }
 
+#include <stdio.h>
+#include <math.h>
+
 #define TILE_SIZE		48
 #define MAP_HEIGHT		16
 #define MAP_WIDTH		16
@@ -331,16 +334,54 @@
 #define COLOR_WALL		0x777777
 #define COLOR_PLAYER	0xFF0000
 
+#define NORTH			(M_PI / 2)
+#define SOUTH			(3 * M_PI / 2)
+#define EAST			(0)
+#define WEST			(M_PI)
+
+#define FOV				(60 * (M_PI / 180))
+
 // #define NUM_RAYS WINDOW_WIDTH
 // #define FOV_ANGLE (60 * (M_PI / 180))
 
+typedef struct s_map	t_map;
+typedef struct s_player	t_player;
+typedef struct s_ray	t_ray;
 typedef struct s_mlx	t_mlx;
+
+struct s_map
+{
+	char	**grid;
+	size_t	width;
+	size_t	height;
+};
+
+// fov: field of view
+struct s_player
+{
+	double	x;
+	double	y;
+	double	direction;
+	double	fov;
+};
+
+struct s_ray
+{
+	double	angle;
+	double	distance;
+	bool	hit_wall;
+	bool	hit_vertical;
+};
 
 struct s_mlx
 {
 	void		*mlx_ptr;
 	void		*win_ptr;
+	t_map		map;
+	t_player	player;
+	t_ray		ray;
 };
+
 
 int map[MAP_HEIGHT][MAP_WIDTH] = {
    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -409,17 +450,73 @@ void	draw_minimap(t_mlx *mlx)
 	}
 }
 
-int	ray_casting(void *mlx)
+void	cast_ray(t_player *player, t_ray *ray)
+{
+	double	x_intercecpt;
+	double	y_intercecpt;
+	double	x_step;
+	double	y_step;
+
+	ray->hit_wall = false;
+	x_intercecpt = player->x + (1 - (player->x - floor(player->x))x_in_cell) * cos(ray->angle);
+	y_intercecpt = player->y + (1 - (player->y - floor(player->y))y_in_cell) * sin(ray->angle);
+	x_step = cos(ray->angle);
+	y_step = sin(ray->angle);
+	while (!ray->hit_wall)
+	{
+	}
+}
+
+void	ray_casting(t_mlx *mlx)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < WINDOW_WIDTH)
+	{
+		mlx->ray.angle = mlx->player.direction - (mlx->player.fov / 2) + ((double)i / WINDOW_WIDTH) * mlx->player.fov;
+		cast_ray(&mlx->player, &mlx->ray);
+		i++
+	}
+}
+
+int	draw(void *mlx)
 {
 	draw_minimap(mlx);
+	ray_casting(mlx);
+	return (0);
+}
+
+// void	init_ray(t_ray *ray)
+// {
+// 	ray->angle = 
+// }
+
+void	init_player(t_player *player)
+{
+	player->x = 4;
+	player->y = 4;
+	player->direction = NORTH;
+	player->fov = FOV;
+}
+
+void	init_mlx(t_mlx *mlx)
+{
+	mlx->mlx_ptr = mlx_init();
+	mlx->win_ptr = mlx_new_window(mlx->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "mlx");
+//	init_map(mlx);
+	init_player(&mlx->player);
+//	printf("%lf\n", mlx->player.direction);
+//	init_ray(mlx);
 }
 
 int	main(void)
 {
 	t_mlx	mlx;
 
-	mlx.mlx_ptr = mlx_init();
-	mlx.win_ptr = mlx_new_window(mlx.mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "mlx");
-  	mlx_loop_hook(mlx.mlx_ptr, ray_casting, &mlx);
+	init_mlx(&mlx);
+  	mlx_loop_hook(mlx.mlx_ptr, draw, &mlx);
 	mlx_loop(mlx.mlx_ptr);
+	return (0);
 }
+
