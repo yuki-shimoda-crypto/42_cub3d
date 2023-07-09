@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/06 20:25:56 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/09 12:17:55 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -452,18 +452,36 @@ void	draw_minimap(t_mlx *mlx)
 
 void	cast_ray(t_player *player, t_ray *ray)
 {
-	double	x_intercecpt;
-	double	y_intercecpt;
-	double	x_step;
-	double	y_step;
+	double	intercecpt_x;
+	double	intercecpt_y;
+	double	step_x;
+	double	step_y;
+	int		grid_x;
+	int		grid_y;
+	double	check_x;
+	double	check_y;
 
 	ray->hit_wall = false;
-	x_intercecpt = player->x + (1 - (player->x - floor(player->x))x_in_cell) * cos(ray->angle);
-	y_intercecpt = player->y + (1 - (player->y - floor(player->y))y_in_cell) * sin(ray->angle);
-	x_step = cos(ray->angle);
-	y_step = sin(ray->angle);
+	intercecpt_x = player->x + (1 - (player->x - floor(player->x))) * cos(ray->angle);
+	intercecpt_y = player->y + (1 - (player->y - floor(player->y))) * sin(ray->angle);
+	step_x = cos(ray->angle);
+	step_y = sin(ray->angle);
+	check_x = intercecpt_x;
+	check_y = intercecpt_y;
 	while (!ray->hit_wall)
 	{
+		grid_x = floor(check_x);
+		grid_y = floor(check_y);
+		if (grid_x < MAP_WIDTH && grid_y < MAP_HEIGHT && map[grid_y][grid_x])
+		{
+			ray->hit_wall = true;
+			ray->distance = sqrt((check_x - player->x) * (check_x - player->x) + (check_y - player->y) * (check_y - player->y));
+		}
+		else
+		{
+			check_x += step_x;
+			check_y += step_y;
+		}
 	}
 }
 
@@ -476,7 +494,7 @@ void	ray_casting(t_mlx *mlx)
 	{
 		mlx->ray.angle = mlx->player.direction - (mlx->player.fov / 2) + ((double)i / WINDOW_WIDTH) * mlx->player.fov;
 		cast_ray(&mlx->player, &mlx->ray);
-		i++
+		i++;
 	}
 }
 
