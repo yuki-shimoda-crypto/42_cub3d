@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/09 12:17:55 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/11 00:06:06 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,23 +326,31 @@
 
 #define PLAYER_SIZE		(TILE_SIZE / 4)
 
-#define SPACE			0
-#define WALL			1
-#define PLAYER			2
+#define SPACE			'0'
+#define WALL			'1'
+#define PLAYER			'2'
 
+// minimap
 #define COLOR_SPACE		0xFFFFFF
 #define COLOR_WALL		0x777777
 #define COLOR_PLAYER	0xFF0000
 
-#define NORTH			(M_PI / 2)
-#define SOUTH			(3 * M_PI / 2)
-#define EAST			(0)
-#define WEST			(M_PI)
+// cub3d
+#define COLOR_SKY		0xFFFFFF
+#define COLOR_GROUND	0x000000
+#define COLOR_NORTH		0xFF0000
+#define COLOR_SOUTH		0xFF0000
+#define COLOR_EAST		0xFF0000
+#define COLOR_WEST		0xFF0000
+#define COLOR_RAY		0x0000FF
+
+
+#define NORTH			(270 * (M_PI / 180))
+#define SOUTH			(90 * (M_PI / 180))
+#define EAST			(0 * (M_PI / 180))
+#define WEST			(180 * (M_PI / 180))
 
 #define FOV				(60 * (M_PI / 180))
-
-// #define NUM_RAYS WINDOW_WIDTH
-// #define FOV_ANGLE (60 * (M_PI / 180))
 
 typedef struct s_map	t_map;
 typedef struct s_player	t_player;
@@ -382,27 +390,7 @@ struct s_mlx
 	t_ray		ray;
 };
 
-
-int map[MAP_HEIGHT][MAP_WIDTH] = {
-   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-   {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
-   {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
-   {1,0,0,0,2,0,0,1,1,0,0,0,0,0,0,1},
-   {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
-   {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
-   {1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1},
-   {1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1},
-   {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
-   {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
-   {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
-   {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
-   {1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1},
-   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-};
-
-void	draw_cell(t_mlx *mlx, size_t cell_x, size_t cell_y)
+void	draw_cell(t_mlx *mlx, t_map *map, size_t cell_x, size_t cell_y)
 {
 	size_t	pixel_x;
 	size_t	pixel_y;
@@ -420,11 +408,11 @@ void	draw_cell(t_mlx *mlx, size_t cell_x, size_t cell_y)
 		pixel_x = pixel_x_start;
 		while (pixel_x < pixel_x_end)
 		{
-			if (map[cell_y][cell_x] == WALL)
+			if (map->grid[cell_y][cell_x] == WALL)
 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_WALL);
-			else if (map[cell_y][cell_x] == SPACE)
+			else if (map->grid[cell_y][cell_x] == SPACE)
 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_SPACE);
-			else if (map[cell_y][cell_x] == PLAYER)
+			else if (map->grid[cell_y][cell_x] == PLAYER)
 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_PLAYER);
 			pixel_x++;
 		}
@@ -432,7 +420,7 @@ void	draw_cell(t_mlx *mlx, size_t cell_x, size_t cell_y)
 	}
 }
 
-void	draw_minimap(t_mlx *mlx)
+void	draw_minimap(t_mlx *mlx, t_map *map)
 {
 	size_t	x;
 	size_t	y;
@@ -443,14 +431,14 @@ void	draw_minimap(t_mlx *mlx)
 		x = 0;
 		while (x < MAP_WIDTH)
 		{
-			draw_cell(mlx, x, y);
+			draw_cell(mlx, map, x, y);
 			x++;
 		}
 		y++;
 	}
 }
 
-void	cast_ray(t_player *player, t_ray *ray)
+void	cast_ray(t_mlx *mlx, t_map *map, t_player *player, t_ray *ray)
 {
 	double	intercecpt_x;
 	double	intercecpt_y;
@@ -472,7 +460,7 @@ void	cast_ray(t_player *player, t_ray *ray)
 	{
 		grid_x = floor(check_x);
 		grid_y = floor(check_y);
-		if (grid_x < MAP_WIDTH && grid_y < MAP_HEIGHT && map[grid_y][grid_x])
+		if (grid_x < MAP_WIDTH && grid_y < MAP_HEIGHT && map->grid[grid_y][grid_x] == '1')
 		{
 			ray->hit_wall = true;
 			ray->distance = sqrt((check_x - player->x) * (check_x - player->x) + (check_y - player->y) * (check_y - player->y));
@@ -485,46 +473,126 @@ void	cast_ray(t_player *player, t_ray *ray)
 	}
 }
 
+void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
+{
+	size_t	y;
+	double	corrected_distance;
+	double	strip_height;
+	double	top_pixel;
+	double	bottom_pixel;
+
+	corrected_distance = fabs(ray->distance * cos(ray->angle - player->direction));
+//	printf("ray_distance\t%lf\n", ray->distance);
+//	printf("corrected_distance\t%lf\n", corrected_distance);
+	strip_height = WINDOW_HEIGHT * 1 / (corrected_distance);
+//	printf("WINDOW_HEIGHT%d\tstrip_height\t%lf\n", WINDOW_HEIGHT, strip_height);
+	top_pixel = ((double)WINDOW_HEIGHT / 2.0) - (strip_height / 2.0);
+//	printf("top_pixel%lf\n", top_pixel);
+	bottom_pixel = ((double)WINDOW_HEIGHT / 2.0) + (strip_height / 2.0);
+	if (top_pixel < 0)
+		top_pixel = 0;
+	if (bottom_pixel > WINDOW_HEIGHT)
+		bottom_pixel = WINDOW_HEIGHT;
+	y = 0;
+	while (y < WINDOW_HEIGHT)
+	{
+		if (y < top_pixel)
+		{
+			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, COLOR_SKY);
+		}
+		else if (y > bottom_pixel)
+		{
+			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, COLOR_GROUND);
+		}
+		else
+		{
+			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, COLOR_EAST);
+		}
+		y++;
+	}
+}
+
 void	ray_casting(t_mlx *mlx)
 {
-	size_t	i;
+	size_t	x;
 
-	i = 0;
-	while (i < WINDOW_WIDTH)
+	x = 0;
+	while (x < WINDOW_WIDTH)
 	{
-		mlx->ray.angle = mlx->player.direction - (mlx->player.fov / 2) + ((double)i / WINDOW_WIDTH) * mlx->player.fov;
-		cast_ray(&mlx->player, &mlx->ray);
-		i++;
+		mlx->ray.angle = mlx->player.direction - (mlx->player.fov / 2) + ((double)x / (double)WINDOW_WIDTH) * mlx->player.fov;
+		if (mlx->ray.angle < 0)
+			mlx->ray.angle += 2 * M_PI;
+		else if (mlx->ray.angle > 2 * M_PI)
+			mlx->ray.angle -= 2 * M_PI;
+		cast_ray(mlx, &mlx->map, &mlx->player, &mlx->ray);
+		draw_wall_strip(mlx, &mlx->player, &mlx->ray, x);
+		x++;
 	}
 }
 
 int	draw(void *mlx)
 {
-	draw_minimap(mlx);
+	draw_minimap(mlx, &((t_mlx *)mlx)->map);
 	ray_casting(mlx);
 	return (0);
 }
 
-// void	init_ray(t_ray *ray)
-// {
-// 	ray->angle = 
-// }
+void	init_map(t_map *map, t_player *player)
+{
+	size_t	x;
+	size_t	y;
+
+	map->grid = calloc(sizeof(char *), MAP_HEIGHT + 1);
+	y = 0;
+	while (y < MAP_HEIGHT)
+	{
+		map->grid[y] = calloc(sizeof(char), MAP_WIDTH + 1);
+		y++;
+	}
+	y = 0;
+	while (y < MAP_HEIGHT)
+	{
+		x = 0;
+		while (x < MAP_WIDTH)
+		{
+			if (y == 0 || x == 0 || x == MAP_HEIGHT - 1 || y == MAP_WIDTH - 1)
+				map->grid[y][x] = '1';
+			else
+				map->grid[y][x] = '0';
+			x++;
+		}
+		y++;
+	}
+	map->grid[(size_t)player->y][(size_t)player->x] = '2';
+}
 
 void	init_player(t_player *player)
 {
 	player->x = 4;
 	player->y = 4;
-	player->direction = NORTH;
+	player->direction = SOUTH;
 	player->fov = FOV;
+}
+
+void	printf_map(char **grid)
+{
+	size_t	y;
+
+	y = 0;
+	while (y < MAP_HEIGHT)
+	{
+		printf("%s\n", grid[y]);
+		y++;
+	}
 }
 
 void	init_mlx(t_mlx *mlx)
 {
 	mlx->mlx_ptr = mlx_init();
 	mlx->win_ptr = mlx_new_window(mlx->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "mlx");
-//	init_map(mlx);
 	init_player(&mlx->player);
-//	printf("%lf\n", mlx->player.direction);
+	init_map(&mlx->map, &mlx->player);
+	printf_map(mlx->map.grid);
 //	init_ray(mlx);
 }
 
