@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/11 10:16:10 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/11 23:07:35 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -345,7 +345,6 @@
 #define COLOR_WEST		0xFF0000
 #define COLOR_RAY		0x0000FF
 
-
 #define NORTH			(270 * (M_PI / 180))
 #define SOUTH			(90 * (M_PI / 180))
 #define EAST			(0 * (M_PI / 180))
@@ -382,6 +381,11 @@ struct s_ray
 	double	distance;
 	bool	hit_wall;
 	bool	hit_vertical;
+	int		side;
+	double	dir_x;
+	double	dir_y;
+	int		step_x;
+	int		step_y;
 };
 
 struct s_mlx
@@ -441,41 +445,156 @@ void	draw_minimap(t_mlx *mlx, t_map *map)
 	}
 }
 
-void	cast_ray(t_mlx *mlx, t_map *map, t_player *player, t_ray *ray)
-{
-	double	intercecpt_x;
-	double	intercecpt_y;
-	double	step_x;
-	double	step_y;
-	int		grid_x;
-	int		grid_y;
-	double	check_x;
-	double	check_y;
+// void	cast_ray(t_mlx *mlx, t_map *map, t_player *player, t_ray *ray)
+// {
+// 	double	intercecpt_x;
+// 	double	intercecpt_y;
+// 	double	step_x;
+// 	double	step_y;
+// 	int		grid_x;
+// 	int		grid_y;
+// 	double	check_x;
+// 	double	check_y;
+// 
+// 	ray->hit_wall = false;
+// 	intercecpt_x = player->x + (1 - (player->x - floor(player->x))) * cos(ray->angle);
+// 	intercecpt_y = player->y + (1 - (player->y - floor(player->y))) * sin(ray->angle);
+// 	step_x = cos(ray->angle);
+// 	step_y = sin(ray->angle);
+// 	check_x = intercecpt_x;
+// 	check_y = intercecpt_y;
+// 	while (!ray->hit_wall)
+// 	{
+// 		grid_x = floor(check_x);
+// 		grid_y = floor(check_y);
+// 		if (grid_x < MAP_WIDTH && grid_y < MAP_HEIGHT && map->grid[grid_y][grid_x] == '1')
+// 		{
+// 			ray->hit_wall = true;
+// 			ray->distance = sqrt((grid_x - player->x) * (grid_x - player->x) + (grid_y - player->y) * (grid_y - player->y));
+// //			ray->distance = sqrt((check_x - player->x) * (check_x - player->x) + (check_y - player->y) * (check_y - player->y));
+// 		}
+// 		else
+// 		{
+// 			check_x += step_x;
+// 			check_y += step_y;
+// 		}
+// 	}
+// }
 
-	ray->hit_wall = false;
-	intercecpt_x = player->x + (1 - (player->x - floor(player->x))) * cos(ray->angle);
-	intercecpt_y = player->y + (1 - (player->y - floor(player->y))) * sin(ray->angle);
-	step_x = cos(ray->angle);
-	step_y = sin(ray->angle);
-	check_x = intercecpt_x;
-	check_y = intercecpt_y;
-	while (!ray->hit_wall)
+void cast_ray(t_map *map, t_player *player, t_ray *ray)
+{
+    int mapX = (int)player->x;
+    int mapY = (int)player->y;
+
+    ray->dir_x = cos(ray->angle);
+    ray->dir_y = sin(ray->angle);
+
+    double sideDistX;
+    double sideDistY;
+
+    double deltaDistX = fabs(1 / ray->dir_x);
+    double deltaDistY = fabs(1 / ray->dir_y);
+    double perpWallDist;
+
+    ray->hit_wall = false;
+
+    if (ray->dir_x < 0)
 	{
-		grid_x = floor(check_x);
-		grid_y = floor(check_y);
-		if (grid_x < MAP_WIDTH && grid_y < MAP_HEIGHT && map->grid[grid_y][grid_x] == '1')
-//		if (check_x < MAP_WIDTH && check_y < MAP_HEIGHT && map->check[check_y][check_x] == '1')
+        ray->step_x = -1;
+        sideDistX = (player->x - mapX) * deltaDistX;
+    }
+	else
+	{
+        ray->step_x = 1;
+        sideDistX = (mapX + 1.0 - player->x) * deltaDistX;
+    }
+    if (ray->dir_y < 0)
+	{
+        ray->step_y = -1;
+        sideDistY = (player->y - mapY) * deltaDistY;
+    }
+	else
+	{
+        ray->step_y = 1;
+        sideDistY = (mapY + 1.0 - player->y) * deltaDistY;
+    }
+    while (ray->hit_wall == false)
+	{
+        if (sideDistX < sideDistY)
 		{
-			ray->hit_wall = true;
-			ray->distance = sqrt((grid_x - player->x) * (grid_x - player->x) + (grid_y - player->y) * (grid_y - player->y));
-		}
+            sideDistX += deltaDistX;
+            mapX += ray->step_x;
+            ray->side = 0;
+        }
 		else
 		{
-			check_x += step_x;
-			check_y += step_y;
-		}
-	}
+            sideDistY += deltaDistY;
+            mapY += ray->step_y;
+            ray->side = 1;
+        }
+        if (map->grid[mapY][mapX] == WALL)
+			ray->hit_wall = true;
+    }
+
+     if (ray->side == 0)
+	 	perpWallDist = (mapX - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
+     else
+	 	perpWallDist = (mapY - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
+
+    ray->distance = perpWallDist;
 }
+
+// void cast_ray(t_mlx *mlx) {
+//     int mapX = (int)mlx->player.x;
+//     int mapY = (int)mlx->player.y;
+// 	mlx->ray.dir_x = cos(mlx->ray.angle);
+// 	mlx->ray.dir_y = sin(mlx->ray.angle);
+// 
+//     double sideDistX;
+//     double sideDistY;
+// 
+//     double deltaDistX = fabs(1 / mlx->ray.dirX);
+//     double deltaDistY = fabs(1 / mlx->ray.dirY);
+//     double perpWallDist;
+// 
+//     int stepX;
+//     int ray->step_y;
+// 
+//     int hit = 0;
+// 
+//     if (mlx->ray.dirX < 0) {
+//         stepX = -1;
+//         sideDistX = (mlx->player.x - mapX) * deltaDistX;
+//     } else {
+//         stepX = 1;
+//         sideDistX = (mapX + 1.0 - mlx->player.x) * deltaDistX;
+//     }
+//     if (mlx->ray.dirY < 0) {
+//         stepY = -1;
+//         sideDistY = (mlx->player.y - mapY) * deltaDistY;
+//     } else {
+//         stepY = 1;
+//         sideDistY = (mapY + 1.0 - mlx->player.y) * deltaDistY;
+//     }
+// 
+//     while (hit == 0) {
+//         if (sideDistX < sideDistY) {
+//             sideDistX += deltaDistX;
+//             mapX += stepX;
+//             mlx->ray.side = 0;
+//         } else {
+//             sideDistY += deltaDistY;
+//             mapY += stepY;
+//             mlx->ray.side = 1;
+//         }
+//         if (mlx->map.grid[mapY][mapX] == WALL) hit = 1;
+//     }
+// 
+//     if (mlx->ray.side == 0) perpWallDist = (mapX - mlx->player.x + (1 - stepX) / 2) / mlx->ray.dirX;
+//     else perpWallDist = (mapY - mlx->player.y + (1 - stepY) / 2) / mlx->ray.dirY;
+// 
+//     mlx->ray.distance = perpWallDist;
+// }
 
 void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 {
@@ -532,7 +651,7 @@ void	ray_casting(t_mlx *mlx)
 		else if (mlx->ray.angle > 2 * M_PI)
 			mlx->ray.angle -= 2 * M_PI;
 		printf("%lf\n", mlx->ray.angle * 180 / M_PI);
-		cast_ray(mlx, &mlx->map, &mlx->player, &mlx->ray);
+		cast_ray(&mlx->map, &mlx->player, &mlx->ray);
 		draw_wall_strip(mlx, &mlx->player, &mlx->ray, x);
 		x++;
 	}
@@ -620,7 +739,7 @@ void	change_move_value(t_map *map, t_player *player, double new_x, double new_y)
 	player->y = new_y;
 }
 
-void	event_key_press(int key_num, t_mlx *mlx)
+int	event_key_press(int key_num, t_mlx *mlx)
 {
 	double	new_x;
 	double	new_y;
@@ -667,6 +786,7 @@ void	event_key_press(int key_num, t_mlx *mlx)
 		if (mlx->player.direction > 2 * M_PI)
 			mlx->player.direction -= 2 * M_PI;
 	}
+	return (9);
 }
 
 // int	event_key_press(int key_num, t_mlx *mlx)
