@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/30 15:57:46 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/11 09:16:20 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # define COLOR_RESET	"\033[0m"
 # define COLOR_RED		"\033[31m"
 
-# define CLUSTER
+// # define CLUSTER
 # ifdef CLUSTER
 #  define KEY_LEFT 123
 #  define KEY_UP 126

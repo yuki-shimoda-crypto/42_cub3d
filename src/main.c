@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/11 00:06:06 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/11 10:16:10 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,13 +163,13 @@
 // int	destroy_mlx(t_mlx *mlx)
 // {
 // 	mlx_destroy_window(mlx->mlx_ptr, mlx->win_ptr);
-// 	exit(EXIT_SUCCESS);
+// 	exit(exit_success);
 // 	return (0);
 // }
 // 
 // int	event_key_press(int key_num, t_mlx *mlx)
 // {
-// 	if (key_num == KEY_ESC)
+// 	if (key_num == key_esc)
 // 		destroy_mlx(mlx);
 // 	return (0);
 // }
@@ -310,6 +310,7 @@
 // }
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 #define TILE_SIZE		48
@@ -351,6 +352,8 @@
 #define WEST			(180 * (M_PI / 180))
 
 #define FOV				(60 * (M_PI / 180))
+
+#define MOVE_SPEED		0.1
 
 typedef struct s_map	t_map;
 typedef struct s_player	t_player;
@@ -461,9 +464,10 @@ void	cast_ray(t_mlx *mlx, t_map *map, t_player *player, t_ray *ray)
 		grid_x = floor(check_x);
 		grid_y = floor(check_y);
 		if (grid_x < MAP_WIDTH && grid_y < MAP_HEIGHT && map->grid[grid_y][grid_x] == '1')
+//		if (check_x < MAP_WIDTH && check_y < MAP_HEIGHT && map->check[check_y][check_x] == '1')
 		{
 			ray->hit_wall = true;
-			ray->distance = sqrt((check_x - player->x) * (check_x - player->x) + (check_y - player->y) * (check_y - player->y));
+			ray->distance = sqrt((grid_x - player->x) * (grid_x - player->x) + (grid_y - player->y) * (grid_y - player->y));
 		}
 		else
 		{
@@ -481,7 +485,10 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 	double	top_pixel;
 	double	bottom_pixel;
 
-	corrected_distance = fabs(ray->distance * cos(ray->angle - player->direction));
+	corrected_distance = ray->distance * cos(ray->angle - player->direction);
+//	corrected_distance = fabs(ray->distance * cos(ray->angle - player->direction));
+//	corrected_distance = ray->distance * cos(ray->angle - player->direction);
+	printf("x = %zu, distance = %lf\n", x, corrected_distance);
 //	printf("ray_distance\t%lf\n", ray->distance);
 //	printf("corrected_distance\t%lf\n", corrected_distance);
 	strip_height = WINDOW_HEIGHT * 1 / (corrected_distance);
@@ -524,6 +531,7 @@ void	ray_casting(t_mlx *mlx)
 			mlx->ray.angle += 2 * M_PI;
 		else if (mlx->ray.angle > 2 * M_PI)
 			mlx->ray.angle -= 2 * M_PI;
+		printf("%lf\n", mlx->ray.angle * 180 / M_PI);
 		cast_ray(mlx, &mlx->map, &mlx->player, &mlx->ray);
 		draw_wall_strip(mlx, &mlx->player, &mlx->ray, x);
 		x++;
@@ -563,14 +571,15 @@ void	init_map(t_map *map, t_player *player)
 		}
 		y++;
 	}
-	map->grid[(size_t)player->y][(size_t)player->x] = '2';
+	map->grid[3][3] = '1';
+	map->grid[(size_t)(player->y)][(size_t)(player->x)] = '2';
 }
 
 void	init_player(t_player *player)
 {
-	player->x = 4;
-	player->y = 4;
-	player->direction = SOUTH;
+	player->x = 4.3;
+	player->y = 4.3;
+	player->direction = NORTH;
 	player->fov = FOV;
 }
 
@@ -596,12 +605,85 @@ void	init_mlx(t_mlx *mlx)
 //	init_ray(mlx);
 }
 
+int	destroy_mlx(t_mlx *mlx)
+{
+	mlx_destroy_window(mlx->mlx_ptr, mlx->win_ptr);
+	exit(EXIT_SUCCESS);
+	return (0);
+}
+
+void	change_move_value(t_map *map, t_player *player, double new_x, double new_y)
+{
+	map->grid[(size_t)(player->y)][(size_t)(player->x)] = '0';
+	map->grid[(size_t)(new_y)][(size_t)(new_x)] = '2';
+	player->x = new_x;
+	player->y = new_y;
+}
+
+void	event_key_press(int key_num, t_mlx *mlx)
+{
+	double	new_x;
+	double	new_y;
+
+	if (key_num == KEY_ESC)
+		destroy_mlx(mlx);
+	else if (key_num == KEY_W)
+	{
+		new_x = mlx->player.x + MOVE_SPEED * cos(mlx->player.direction);
+		new_y = mlx->player.y + MOVE_SPEED * sin(mlx->player.direction);
+		if (mlx->map.grid[(int)new_y][(int)new_x] != WALL)
+			change_move_value(&mlx->map, &mlx->player, new_x, new_y);
+	}
+	else if (key_num == KEY_S)
+	{
+		new_x = mlx->player.x - MOVE_SPEED * cos(mlx->player.direction);
+		new_y = mlx->player.y - MOVE_SPEED * sin(mlx->player.direction);
+		if (mlx->map.grid[(int)new_y][(int)new_x] != WALL)
+			change_move_value(&mlx->map, &mlx->player, new_x, new_y);
+	}
+	else if (key_num == KEY_A)
+	{
+		new_x = mlx->player.x + MOVE_SPEED * sin(mlx->player.direction);
+		new_y = mlx->player.y - MOVE_SPEED * cos(mlx->player.direction);
+		if (mlx->map.grid[(int)new_y][(int)new_x] != WALL)
+			change_move_value(&mlx->map, &mlx->player, new_x, new_y);
+	}
+	else if (key_num == KEY_D)
+	{
+		new_x = mlx->player.x - MOVE_SPEED * sin(mlx->player.direction);
+		new_y = mlx->player.y + MOVE_SPEED * cos(mlx->player.direction);
+		if (mlx->map.grid[(int)new_y][(int)new_x] != WALL)
+			change_move_value(&mlx->map, &mlx->player, new_x, new_y);
+	}
+	else if (key_num == KEY_LEFT)
+	{
+		mlx->player.direction -= 10 * (M_PI / 180);
+		if (mlx->player.direction < 0)
+			mlx->player.direction += 2 * M_PI;
+	}
+	else if (key_num == KEY_RIGHT)
+	{
+		mlx->player.direction += 10 * (M_PI / 180);
+		if (mlx->player.direction > 2 * M_PI)
+			mlx->player.direction -= 2 * M_PI;
+	}
+}
+
+// int	event_key_press(int key_num, t_mlx *mlx)
+// {
+// 	if (key_num == KEY_ESC)
+// 		destroy_mlx(mlx);
+// 	return (0);
+// }
+
 int	main(void)
 {
 	t_mlx	mlx;
 
 	init_mlx(&mlx);
   	mlx_loop_hook(mlx.mlx_ptr, draw, &mlx);
+ 	mlx_hook(mlx.win_ptr, 2, 1L << 0, event_key_press, &mlx);
+ 	mlx_hook(mlx.win_ptr, 17, 1L << 2, destroy_mlx, &mlx);
 	mlx_loop(mlx.mlx_ptr);
 	return (0);
 }
