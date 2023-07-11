@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_func.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 20:04:57 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/12 14:46:59 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/11 19:06:33 by enogaWa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,19 @@ void	free_map(t_map_node *map)
 		free(map);
 		map = tmp;
 	}
+}
+
+void	free_map_array(char **map)
+{
+	size_t	i;
+
+	i = 0;
+	while (map[i])
+	{
+		free(map[i]);
+		i++;
+	}
+	free(map);
 }
 
 void	free_data(t_game_data *data)

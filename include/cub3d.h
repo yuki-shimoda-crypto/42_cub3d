@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/11 09:16:20 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/11 19:22:54 by enogaWa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stdbool.h>
 # include <stddef.h>
+# include <stdlib.h>
 
 // remove
 # include <string.h>
@@ -139,8 +140,8 @@ void			check_color(t_game_data *data);
 void			check_cub_file(t_cub_file_node *node, t_game_data *data);
 void			check_file_element(t_cub_file_count *count);
 void			check_file_name(int argc, const char *argv[]);
-void			check_map(t_map_node *map);
-void			check_map_surrounded_by_walls(t_map_node *map);
+void			check_map(t_cub_file_node *map);
+void			check_map_surrounded_by_walls(char **dup_map);
 void			check_texture_file(t_game_data *data);
 void			count_file_element(t_cub_file_node *node,
 					t_cub_file_count *count);
@@ -154,6 +155,7 @@ t_map_node		*map_node_last(t_map_node *map);
 void			map_node_addback(t_map_node **map, t_map_node *next);
 t_map_node		*map_node_new(char *str);
 t_cub_file_node	*read_cub_file(const char *filename);
+char			**make_map_array(t_cub_file_node	*node);//
 
 // debug
 void			print_cub_file_node(t_cub_file_node *node);
@@ -165,20 +167,21 @@ void			print_map(t_map_node *map);
 void			free_cub_file_node(t_cub_file_node *node);
 void			free_map(t_map_node *map);
 void			free_data(t_game_data *data);
+void			free_map_array(char **map);
 
 // queue
 void			enqueue(t_queue **queue, size_t x, size_t y);
 void			dequeue(t_queue **queue);
 
 // can move
-t_map_node		*move_map_row(t_map_node *map, size_t y);
-bool			can_move_right(t_map_node *map, size_t x, size_t y);
-bool			can_move_left(t_map_node *map, size_t x, size_t y);
-bool			can_move_down(t_map_node *map, size_t x, size_t y);
-bool			can_move_up(t_map_node *map, size_t x, size_t y);
+t_map_node		*move_map_row(char **dup_map, size_t y);
+bool			can_move_right(char **dup_map, size_t x, size_t y);
+bool			can_move_left(char **dup_map, size_t x, size_t y);
+bool			can_move_down(char **dup_map, size_t x, size_t y);
+bool			can_move_up(char **dup_map, size_t x, size_t y);
 
 // safe mlx
-void	*safe_mlx_new_window(void *mlx_ptr, int size_x, int size_y, char *title);
-void	*safe_mlx_init(void);
+// void	*safe_mlx_new_window(void *mlx_ptr, int size_x, int size_y, char *title);
+// void	*safe_mlx_init(void);
 
 #endif

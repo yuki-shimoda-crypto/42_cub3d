@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 21:03:01 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/12 18:38:16 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/11 23:06:55 by enogaWa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ static bool	is_valid_characters(const char c, size_t *orientation)
 	return (false);
 }
 
-static void	check_map_characters(t_map_node *map)
+#include <stdio.h>
+static void	check_map_characters(t_cub_file_node *map)
 {
 	size_t	i;
 	size_t	orientation;
@@ -46,8 +47,11 @@ static void	check_map_characters(t_map_node *map)
 	while (map)
 	{
 		i = 0;
+
+		printf("%s\n", map->line);
 		while (map->line[i])
 		{
+			printf("%zu\n", i);
 			if (!is_valid_characters(map->line[i], &orientation))
 			{
 				exit_error(
@@ -61,8 +65,11 @@ static void	check_map_characters(t_map_node *map)
 		exit_error("Orientation must be one.\n", false);
 }
 
-void	check_map(t_map_node *map)
+void	check_map(t_cub_file_node *map)
 {
+	char	**dup_map;
+
 	check_map_characters(map);
-	check_map_surrounded_by_walls(map);
+	dup_map = make_map_array(map);
+	check_map_surrounded_by_walls(dup_map);//
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 19:02:02 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/10 12:35:30 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/11 23:27:43 by enogaWa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,16 +43,22 @@ static bool	is_texture_color(const char *line)
 		return (true);
 	return (false);
 }
-
+#include <stdio.h>
 static t_cub_file_node	*skip_to_map(t_cub_file_node *node)
 {
 	size_t	i;
 
 	i = 0;
+	size_t x = 0;
 	while (node)
 	{
+		// printf("%zu\n", x++);
+		// printf("%c\n", node->line[0]);
 		if (i >= 6 && node->line[0] != '\0')
+		{
+			// printf("%s\t%zu\n", "test", x);
 			break ;
+		}
 		if (is_texture_color(node->line))
 			i++;
 		node = node->next;

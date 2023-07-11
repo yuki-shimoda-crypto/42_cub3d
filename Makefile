@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+         #
+#    By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/16 19:51:43 by yshimoda          #+#    #+#              #
-#    Updated: 2023/07/04 22:13:51 by yshimoda         ###   ########.fr        #
+#    Updated: 2023/07/11 22:49:20 by enogaWa          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ OBJ_DIR		=	obj
 DEBUG_DIR	=	obj_debug
 INC_DIR		=	include
 LIBFT_DIR	=	libft
-MLX_DIR		=	minilibx-linux
+# MLX_DIR		=	minilibx-linux
 
 SRCS		=	src/can_move.c							\
 				src/check_color.c						\
@@ -41,12 +41,12 @@ SRCS		=	src/can_move.c							\
 
 OBJS		=	$(SRCS:%.c=$(OBJ_DIR)/%.o)
 DEBUG_OBJS	=	$(SRCS:%.c=$(DEBUG_DIR)/%.o)
-INCLUDE		=	-I $(INC_DIR) -I $(MLX_DIR)
+INCLUDE		=	-I $(INC_DIR) #-I $(MLX_DIR)
 
 MATH		=	-lm
 LIBFT		=	$(LIBFT_DIR)/libft.a
-MLX			=	$(MLX_DIR)/libmlx.a
-LIBS		=	$(MATH) $(LIBFT) $(MLX)
+# MLX			=	$(MLX_DIR)/libmlx.a
+LIBS		=	$(MATH) $(LIBFT) #$(MLX)
 
 CC			=	cc
 # CFLAGS		=	-Wall -Wextra -Werror
@@ -62,7 +62,7 @@ CHECK_FUNC	=	nm -u $(NAME) | grep -vwE "U ($(ALLOW_FUNC))"
 LIBS		+=	-lXext -lX11
 else
 CHECK_FUNC	=	nm -u $(NAME) | grep -vwE "_($(ALLOW_FUNC))"
-LIBS		+=	-lmlx -framework OpenGL -framework AppKit
+LIBS		+=	-framework OpenGL -framework AppKit #-lmlx
 endif
 
 ifneq ($(shell command -v ccache), )
@@ -122,8 +122,8 @@ $(NAME):	$(LIBFT) $(MLX) $(OBJS)
 $(LIBFT):
 			$(MAKE) -C $(LIBFT_DIR)
 
-$(MLX):	
-			$(MAKE) -C $(MLX_DIR)
+# $(MLX):	
+# 			$(MAKE) -C $(MLX_DIR)
 
 all:	$(NAME)
 
@@ -131,7 +131,7 @@ clean:
 		$(RM) -r $(OBJ_DIR)
 		$(RM) -r $(DEBUG_DIR)
 		$(MAKE) -C $(LIBFT_DIR) fclean
-		$(MAKE) -C $(MLX_DIR) clean
+		# $(MAKE) -C $(MLX_DIR) clean
 
 fclean:	clean
 		$(RM) $(NAME)
@@ -140,7 +140,7 @@ re:		fclean all
 
 bonus:	re
 
-debug:	$(LIBFT) $(DEBUG_OBJS) $(MLX)
+debug:	$(LIBFT) $(DEBUG_OBJS) #$(MLX)
 		$(CCACHE) $(CC) $(CFLAGS) $(DEBUG_FLUG) $(INCLUDE) -o $(NAME) $(DEBUG_OBJS) $(LIBS)
 
 norm:	

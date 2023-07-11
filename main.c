@@ -195,204 +195,180 @@
 // float playerY = 300;
 // float playerA = 0;
 
-#define MAP_NUM_ROWS 13
-#define MAP_NUM_COLS 20
-#define TILE_SIZE 64
-#define FOV_ANGLE (60 * (M_PI / 180))
-#define WINDOW_WIDTH (MAP_NUM_COLS * TILE_SIZE)
-#define WINDOW_HEIGHT (MAP_NUM_ROWS * TILE_SIZE)
 
-#include <stdio.h>
-#include <math.h>
 
-typedef s_player	t_player;
-typedef s_ray		t_ray;
 
-struct	s_player
-{
-	float	position_x;
-	float	position_y;
-	float	direction_x;
-	float	direction_y;
-};
 
-struct	s_ray
-{
-	float	plane_x;
-	float	plane_y;
-	float	distance;
-};
 
-Player player;
-Ray rays[WINDOW_WIDTH];
 
-int worldMap[mapWidth][mapHeight]=
-{
-  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,2,2,2,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
-  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,3,0,0,0,3,0,0,0,1},
-  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,2,2,0,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,0,0,0,5,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-};
 
-void	cast_all_rays(void)
-{
-	int		num_rays = WINDOW_WIDTH;
-	float	ray_angle = player.rotation_angle - (FOV_ANGLE / 2);
 
-	for (int i = 0; i < num_rays; i++)
-	{
-		float	ray_distance = cast_ray(ray_angle);
-		rays[i].distance = ray_distance;
-		rays[i].ray_angle = ray_angle;
 
-		ray_angle += FOV_ANGLE / num_rays;
-	}
-}
 
-float	cast_ray(float angle)
-{
-	angle = normalize_angle(angle)
-	:
-}
 
 
 
+// #define MAP_NUM_ROWS 13
+// #define MAP_NUM_COLS 20
+// #define TILE_SIZE 64
+// #define FOV_ANGLE (60 * (M_PI / 180))
+// #define WINDOW_WIDTH (MAP_NUM_COLS * TILE_SIZE)
+// #define WINDOW_HEIGHT (MAP_NUM_ROWS * TILE_SIZE)
 
+// #include <stdio.h>
+// #include <math.h>
 
+// typedef s_player	t_player;
+// typedef s_ray		t_ray;
 
+// struct	s_player
+// {
+// 	float	position_x;
+// 	float	position_y;
+// 	float	direction_x;
+// 	float	direction_y;
+// };
 
+// struct	s_ray
+// {
+// 	float	plane_x;
+// 	float	plane_y;
+// 	float	distance;
+// };
 
+// Player player;
+// Ray rays[WINDOW_WIDTH];
 
+// int worldMap[mapWidth][mapHeight]=
+// {
+//   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,2,2,2,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
+//   {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,3,0,0,0,3,0,0,0,1},
+//   {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,2,2,0,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,4,0,0,0,0,5,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,4,0,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+// };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#include <stdio.h>
-#include <math.h>
-
-#define MAP_NUM_ROWS 13
-#define MAP_NUM_COLS 20
-#define TILE_SIZE 64
-#define FOV_ANGLE (60 * (M_PI / 180))
-#define WINDOW_WIDTH (MAP_NUM_COLS * TILE_SIZE)
-#define WINDOW_HEIGHT (MAP_NUM_ROWS * TILE_SIZE)
-
-typedef struct  {
-    float x;
-    float y;
-    float width;
-    float height;
-} Player;
-
-typedef struct {
-    float x;
-    float y;
-    float ray_angle;
-    float distance;
-    int is_vertical;
-} Ray;
-
-Player player;
-Ray rays[WINDOW_WIDTH];
-
-void cast_all_rays(void) {
-    int num_rays = WINDOW_WIDTH;
-    float ray_angle = player.rotation_angle - (FOV_ANGLE / 2);
-
-    for (int i = 0; i < num_rays; i++) {
-        float ray_distance = cast_ray(ray_angle);
-        rays[i].distance = ray_distance;
-        rays[i].ray_angle = ray_angle;
-
-        ray_angle += FOV_ANGLE / num_rays;
-    }
-}
-
-float cast_ray(float angle) {
-    // レイの角度を正規化
-    angle = normalize_angle(angle);
-
-    // レイが上下左右どの方向を向いているかをチェック
-    int is_ray_facing_up = angle > 0 && angle < M_PI;
-    int is_ray_facing_down = !is_ray_facing_up;
-    int is_ray_facing_right = angle < 0.5 * M_PI || angle > 1.5 * M_PI;
-    int is_ray_facing_left = !is_ray_facing_right;
-
-    // 初期化
-    float xintercept, yintercept;
-    float xstep, ystep;
-
-    /////////////////////////////////////////////
-    // HORIZONTAL RAY-GRID INTERSECTION CODE
-    /////////////////////////////////////////////
-
-    // ...
-
-    /////////////////////////////////////////////
-    // VERTICAL RAY-GRID INTERSECTION CODE
-    /////////////////////////////////////////////
-
-    // ...
-
-    // 両方の距離を計算し、最小値を選ぶ
-    float horizontal_distance = (is_horizontal_hit) ? distance_between_points(player.x, player.y, horz_hit_x, horz_hit_y) : INT_MAX;
-    float vertical_distance = (is_vertical_hit) ? distance_between_points(player.x, player.y, vert_hit_x, vert_hit_y) : INT_MAX;
-
-    // 最小の距離をレイの距離とする
-    if (vertical_distance < horizontal_distance) {
-        rays[i].distance = vertical_distance;
-        rays[i].is_vertical = 1;
-    } else {
-        rays[i].distance = horizontal_distance;
-        rays[i].is_vertical = 0;
-    }
-}
+// void	cast_all_rays(void)
+// {
+// 	int		num_rays = WINDOW_WIDTH;
+// 	float	ray_angle = player.rotation_angle - (FOV_ANGLE / 2);
+
+// 	for (int i = 0; i < num_rays; i++)
+// 	{
+// 		float	ray_distance = cast_ray(ray_angle);
+// 		rays[i].distance = ray_distance;
+// 		rays[i].ray_angle = ray_angle;
+
+// 		ray_angle += FOV_ANGLE / num_rays;
+// 	}
+// }
+
+// float	cast_ray(float angle)
+// {
+// 	angle = normalize_angle(angle)
+// 	:
+// }
+
+
+
+
+// #include <stdio.h>
+// #include <math.h>
+
+// #define MAP_NUM_ROWS 13
+// #define MAP_NUM_COLS 20
+// #define TILE_SIZE 64
+// #define FOV_ANGLE (60 * (M_PI / 180))
+// #define WINDOW_WIDTH (MAP_NUM_COLS * TILE_SIZE)
+// #define WINDOW_HEIGHT (MAP_NUM_ROWS * TILE_SIZE)
+
+// typedef struct  {
+//     float x;
+//     float y;
+//     float width;
+//     float height;
+// } Player;
+
+// typedef struct {
+//     float x;
+//     float y;
+//     float ray_angle;
+//     float distance;
+//     int is_vertical;
+// } Ray;
+
+// Player player;
+// Ray rays[WINDOW_WIDTH];
+
+// void cast_all_rays(void) {
+//     int num_rays = WINDOW_WIDTH;
+//     float ray_angle = player.rotation_angle - (FOV_ANGLE / 2);
+
+//     for (int i = 0; i < num_rays; i++) {
+//         float ray_distance = cast_ray(ray_angle);
+//         rays[i].distance = ray_distance;
+//         rays[i].ray_angle = ray_angle;
+
+//         ray_angle += FOV_ANGLE / num_rays;
+//     }
+// }
+
+// float cast_ray(float angle) {
+//     // レイの角度を正規化
+//     angle = normalize_angle(angle);
+
+//     // レイが上下左右どの方向を向いているかをチェック
+//     int is_ray_facing_up = angle > 0 && angle < M_PI;
+//     int is_ray_facing_down = !is_ray_facing_up;
+//     int is_ray_facing_right = angle < 0.5 * M_PI || angle > 1.5 * M_PI;
+//     int is_ray_facing_left = !is_ray_facing_right;
+
+//     // 初期化
+//     float xintercept, yintercept;
+//     float xstep, ystep;
+
+//     /////////////////////////////////////////////
+//     // HORIZONTAL RAY-GRID INTERSECTION CODE
+//     /////////////////////////////////////////////
+
+//     // ...
+
+//     /////////////////////////////////////////////
+//     // VERTICAL RAY-GRID INTERSECTION CODE
+//     /////////////////////////////////////////////
+
+//     // ...
+
+//     // 両方の距離を計算し、最小値を選ぶ
+//     float horizontal_distance = (is_horizontal_hit) ? distance_between_points(player.x, player.y, horz_hit_x, horz_hit_y) : INT_MAX;
+//     float vertical_distance = (is_vertical_hit) ? distance_between_points(player.x, player.y, vert_hit_x, vert_hit_y) : INT_MAX;
+
+//     // 最小の距離をレイの距離とする
+//     if (vertical_distance < horizontal_distance) {
+//         rays[i].distance = vertical_distance;
+//         rays[i].is_vertical = 1;
+//     } else {
+//         rays[i].distance = horizontal_distance;
+//         rays[i].is_vertical = 0;
+//     }
+// }
 
