@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/12 12:07:13 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/12 14:09:32 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,270 +43,6 @@
 // 	free_cub_file_node(cub_file_node);
 // 	free_data(&data);
 // 	return (0);
-// }
-
-
-// #include <stdio.h>
-// #include <math.h>
-// 
-// #define TILE_SIZE 64
-// #define PLAYER_SIZE 64
-// #define WINDOW_WIDTH (MAP_NUM_COLS * TILE_SIZE)
-// #define WINDOW_HEIGHT (MAP_NUM_ROWS * TILE_SIZE)
-// #define MAP_NUM_ROWS 16
-// #define MAP_NUM_COLS 16
-// #define NUM_RAYS WINDOW_WIDTH
-// #define FOV_ANGLE (60 * (M_PI / 180))
-// 
-// typedef struct s_player	t_player;
-// typedef struct s_ray	t_ray;
-// typedef struct s_mlx	t_mlx;
-// 
-// struct s_player {
-//     double	x;
-//     double	y;
-// 	double	rotationAngle;
-// };
-// 
-// struct s_ray{
-//     double	x;
-//     double	y;
-//     double	ray_angle;
-//     double	distance;
-//     int		is_vertical;
-// };
-// 
-// struct s_mlx
-// {
-// 	void		*mlx_ptr;
-// 	void		*win_ptr;
-// 	t_player	*player;
-// 	double		posX;
-// 	double		posY;
-// 	double		dirX;
-// 	double		dirY;
-// 	double		planeX;
-// 	double		planeY;
-// 
-// };
-// 
-// // 
-// // Ray rays[WINDOW_WIDTH];
-// 
-// 
-// int map[MAP_NUM_ROWS][MAP_NUM_COLS] = {
-//    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//    {1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
-//    {1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
-//    {1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
-//    {1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
-//    {1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
-//    {1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
-//    {1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
-//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-// };
-// 
-// 
-// void	draw_map_and_player(t_mlx *mlx, t_player *player)
-// {
-// 	int	i;
-// 	int	j;
-// 	int	x;
-// 	int	y;
-// 	int	color;
-// 
-// 	i = 0;
-// 	while (i < MAP_NUM_ROWS)
-// 	{
-// 		j = 0;
-// 		while (j < MAP_NUM_COLS)
-// 		{
-// 			if (map[i][j] == 1)
-// 				color = 0xFFFFFF;
-// 			else
-// 				color = 0x000000;
-// 			y = i * TILE_SIZE;
-// 			while (y < (i + 1) * TILE_SIZE)
-// 			{
-// 				x = j * TILE_SIZE;
-// 				while (x < (j + 1) * TILE_SIZE)
-// 				{
-// 					mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, color);
-// 					x++;
-// 				}
-// 				y++;
-// 			}
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// 	y = player->y - PLAYER_SIZE / 2;
-// 	while (y < player->y + PLAYER_SIZE / 2)
-// 	{
-// 		x = player->x - PLAYER_SIZE / 2;
-// 		while (x < player->x + PLAYER_SIZE / 2)
-// 		{
-// 			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, 0xFF0000);
-// 			x++;
-// 		}
-// 		y++;
-// 	}
-// }
-// 
-// int	destroy_mlx(t_mlx *mlx)
-// {
-// 	mlx_destroy_window(mlx->mlx_ptr, mlx->win_ptr);
-// 	exit(exit_success);
-// 	return (0);
-// }
-// 
-// int	event_key_press(int key_num, t_mlx *mlx)
-// {
-// 	if (key_num == key_esc)
-// 		destroy_mlx(mlx);
-// 	return (0);
-// }
-// 
-// void	write_line(t_mlx *mlx, int x, int start, int end, int color)
-// {
-// 	int		y;
-// 
-// 	y = start;
-// 	while (y < end)
-// 	{
-// 		mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, color);
-// 		y++;
-// 	}
-// }
-// 
-// int	ray_casting(void *mlx)
-// {
-// 	int		x;
-// 	double	cameraX;
-// 	double	rayDirX;
-// 	double	rayDirY;
-// 	int		mapX;
-// 	int		mapY;
-// 	double	sideDistX;
-// 	double	sideDistY;
-// 	double	deltaDistX;
-// 	double	deltaDistY;
-// 	double	perpWallDist;
-// 	int		stepX;
-// 	int		stepY;
-// 	int		hit;
-// 	int		side;
-// 	int		lineHeight;
-// 	int		drawStart;
-// 	int		drawEnd;
-// 	int		color;
-// 
-// 	hit = 0;
-// 	x = 0;
-// 	while (x < NUM_RAYS)
-// 	{
-// 		cameraX = 2 * x / (double)(NUM_RAYS) - 1;
-// 		rayDirX = ((t_mlx *)mlx)->dirX + ((t_mlx *)mlx)->planeX * cameraX;
-// 		rayDirY = ((t_mlx *)mlx)->dirY + ((t_mlx *)mlx)->planeY * cameraX;
-// 		mapX = ((t_mlx *)mlx)->posX;
-// 		mapY = ((t_mlx *)mlx)->posY;
-// 		deltaDistX = fabs(1 / rayDirX);
-// 		deltaDistY = fabs(1 / rayDirY);
-// 		if (rayDirX < 0)
-// 		{
-// 			stepX = -1;
-// 			sideDistX = (((t_mlx *)mlx)->posX - mapX) * deltaDistX;
-// 		}
-// 		else
-// 		{
-// 			stepX = 1;
-// 			sideDistX = (mapX + 1.0 - ((t_mlx *)mlx)->posX) * deltaDistX;
-// 		}
-// 		if (rayDirY < 0)
-// 		{
-// 			stepY = -1;
-// 			sideDistY = (((t_mlx *)mlx)->posY - mapY) * deltaDistY;
-// 		}
-// 		else
-// 		{
-// 			stepY = 1;
-// 			sideDistY = (mapY + 1.0 - ((t_mlx *)mlx)->posY) * deltaDistY;
-// 		}
-// 		while (hit == 0)
-// 		{
-// 			if (sideDistX < sideDistY)
-// 			{
-// 				sideDistX += deltaDistX;
-// 				mapX += stepX;
-// 				side = 0;
-// 			}
-// 			else
-// 			{
-// 				sideDistY += deltaDistY;
-// 				mapY += stepY;
-// 				side = 1;
-// 			}
-// 			if (map[mapY][mapX])
-// 				hit = 1;
-// 		}
-// 		if (side == 0)
-// 			perpWallDist = (mapX - ((t_mlx *)mlx)->posX + (1 - stepX) / 2) / rayDirX;
-// 		else
-// 			perpWallDist = (mapY - ((t_mlx *)mlx)->posY + (1 - stepY) / 2) / rayDirY;
-// 		lineHeight = (int)(WINDOW_HEIGHT / perpWallDist);
-// 		drawStart = -lineHeight / 2 + WINDOW_HEIGHT / 2;
-// 		if (drawStart < 0)
-// 			drawStart = 0;
-// 		drawEnd = lineHeight / 2 + WINDOW_HEIGHT / 2;
-// 		if (drawEnd > WINDOW_HEIGHT)
-// 			drawEnd = WINDOW_HEIGHT;
-// 		if (map[mapY][mapX] == 1)	
-// 			color = 0x0000FF;
-// 		else
-// 			color = 0x000000;
-// 		if (side == 1)
-// 			color = color / 2;
-// 		write_line(mlx, x, drawStart, drawEnd, color);
-// 		x++;
-// 	}
-// 	return (0);
-// }
-// 
-// void	init_mlx(t_mlx *mlx)
-// {
-// 	mlx->mlx_ptr = safe_mlx_init();
-// 	mlx->win_ptr = safe_mlx_new_window(mlx->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "test");
-// 	mlx->posX = 3;
-// 	mlx->posY = 5;
-// 	mlx->dirX = -1;
-// 	mlx->dirY = 0;
-// 	mlx->planeX = 0;
-// 	mlx->planeY = 0.66;
-// }
-// 
-// int	main(void)
-// {
-// 	t_mlx		mlx;
-// 	t_player	player;
-// 
-// 	mlx.player = &player;
-// 	player.x = WINDOW_WIDTH / 2;
-// 	player.y = WINDOW_HEIGHT / 2;
-// 	player.rotationAngle = M_PI / 2;
-// 	init_mlx(&mlx);
-// 	//draw_map_and_player(&mlx, &player);
-// 
-//  	mlx_loop_hook(mlx.mlx_ptr, ray_casting, &mlx);
-// 	mlx_hook(mlx.win_ptr, 2, 1L << 0, event_key_press, &mlx);
-// 	mlx_hook(mlx.win_ptr, 17, 1L << 2, destroy_mlx, &mlx);
-// 	mlx_loop(mlx.mlx_ptr);
 // }
 
 #include <stdio.h>
@@ -545,15 +281,8 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 	double	bottom_pixel;
 
 	corrected_distance = ray->distance * cos(ray->angle - player->direction);
-//	corrected_distance = fabs(ray->distance * cos(ray->angle - player->direction));
-//	corrected_distance = ray->distance * cos(ray->angle - player->direction);
-	printf("x = %zu, distance = %lf\n", x, corrected_distance);
-//	printf("ray_distance\t%lf\n", ray->distance);
-//	printf("corrected_distance\t%lf\n", corrected_distance);
 	strip_height = WINDOW_HEIGHT * 1 / (corrected_distance);
-//	printf("WINDOW_HEIGHT%d\tstrip_height\t%lf\n", WINDOW_HEIGHT, strip_height);
 	top_pixel = ((double)WINDOW_HEIGHT / 2.0) - (strip_height / 2.0);
-//	printf("top_pixel%lf\n", top_pixel);
 	bottom_pixel = ((double)WINDOW_HEIGHT / 2.0) + (strip_height / 2.0);
 	if (top_pixel < 0)
 		top_pixel = 0;
@@ -610,12 +339,9 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
     int texture_x = (int)(wallX * (double)TILE_SIZE);
     if (ray->side == 0 && ray->dir_x > 0)
         texture_x = TILE_SIZE - texture_x - 1;
-    if (ray->side == 1 && ray->dir_y < 0)
+	if (ray->side == 1 && ray->dir_y < 0)
         texture_x = TILE_SIZE - texture_x - 1;
      texture_x = TILE_SIZE - texture_x - 1;
-
-
-
 
  		int texture_y = (y - top_pixel) * TILE_SIZE / strip_height;
 
@@ -657,7 +383,6 @@ void	ray_casting(t_mlx *mlx)
 			mlx->ray.angle += 2 * M_PI;
 		else if (mlx->ray.angle > 2 * M_PI)
 			mlx->ray.angle -= 2 * M_PI;
-		printf("%lf\n", mlx->ray.angle * 180 / M_PI);
 		cast_ray(&mlx->map, &mlx->player, &mlx->ray);
 		draw_wall_strip(mlx, &mlx->player, &mlx->ray, x);
 		x++;
@@ -747,54 +472,68 @@ void	change_move_value(t_map *map, t_player *player, double new_x, double new_y)
 	player->y = new_y;
 }
 
-int	event_key_press(int key_num, t_mlx *mlx)
+
+static void handle_escape_key(t_mlx *mlx)
+{
+	destroy_mlx(mlx);
+}
+
+static void handle_move_key(int key_num, t_mlx *mlx)
 {
 	double	new_x;
 	double	new_y;
 
-	if (key_num == KEY_ESC)
-		destroy_mlx(mlx);
-	else if (key_num == KEY_W)
+	if (key_num == KEY_W)
 	{
 		new_x = mlx->player.x + MOVE_SPEED * cos(mlx->player.direction);
 		new_y = mlx->player.y + MOVE_SPEED * sin(mlx->player.direction);
-		if (mlx->map.grid[(int)new_y][(int)new_x] != WALL)
-			change_move_value(&mlx->map, &mlx->player, new_x, new_y);
 	}
 	else if (key_num == KEY_S)
 	{
 		new_x = mlx->player.x - MOVE_SPEED * cos(mlx->player.direction);
 		new_y = mlx->player.y - MOVE_SPEED * sin(mlx->player.direction);
-		if (mlx->map.grid[(int)new_y][(int)new_x] != WALL)
-			change_move_value(&mlx->map, &mlx->player, new_x, new_y);
 	}
 	else if (key_num == KEY_A)
 	{
 		new_x = mlx->player.x + MOVE_SPEED * sin(mlx->player.direction);
 		new_y = mlx->player.y - MOVE_SPEED * cos(mlx->player.direction);
-		if (mlx->map.grid[(int)new_y][(int)new_x] != WALL)
-			change_move_value(&mlx->map, &mlx->player, new_x, new_y);
 	}
-	else if (key_num == KEY_D)
+	else // KEY_D
 	{
 		new_x = mlx->player.x - MOVE_SPEED * sin(mlx->player.direction);
 		new_y = mlx->player.y + MOVE_SPEED * cos(mlx->player.direction);
-		if (mlx->map.grid[(int)new_y][(int)new_x] != WALL)
-			change_move_value(&mlx->map, &mlx->player, new_x, new_y);
 	}
-	else if (key_num == KEY_LEFT)
+
+	if (mlx->map.grid[(int)new_y][(int)new_x] != WALL)
+		change_move_value(&mlx->map, &mlx->player, new_x, new_y);
+}
+
+static void handle_rotate_key(int key_num, t_mlx *mlx)
+{
+	if (key_num == KEY_LEFT)
 	{
 		mlx->player.direction -= 10 * (M_PI / 180);
 		if (mlx->player.direction < 0)
 			mlx->player.direction += 2 * M_PI;
 	}
-	else if (key_num == KEY_RIGHT)
+	else // KEY_RIGHT
 	{
 		mlx->player.direction += 10 * (M_PI / 180);
 		if (mlx->player.direction > 2 * M_PI)
 			mlx->player.direction -= 2 * M_PI;
 	}
-	return (9);
+}
+
+int	event_key_press(int key_num, t_mlx *mlx)
+{
+	if (key_num == KEY_ESC)
+		handle_escape_key(mlx);
+	else if (key_num == KEY_W || key_num == KEY_S || key_num == KEY_A || key_num == KEY_D)
+		handle_move_key(key_num, mlx);
+	else if (key_num == KEY_LEFT || key_num == KEY_RIGHT)
+		handle_rotate_key(key_num, mlx);
+
+	return (0);
 }
 
 int	main(void)
