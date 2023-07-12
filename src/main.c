@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/13 01:21:42 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/13 01:26:27 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@ void	load_textures(t_mlx *mlx, t_game_data *data)
 void	make_color(t_game_data *data, long *f_color, long *c_color)
 {
 	data->color_floor = f_color[0] * (16 * 16 * 16 * 16) + f_color[1] * (16 * 16) + f_color[2];
-	data->color_ceiling = c_color[0] * (16 * 16 * 16 * 16) + f_color[1] * (16 * 16) + f_color[2];
+	data->color_ceiling = c_color[0] * (16 * 16 * 16 * 16) + c_color[1] * (16 * 16) + c_color[2];
 }
 
 void	draw_wall_strip(t_mlx *mlx, t_ray *ray, size_t x, t_game_data *data)
