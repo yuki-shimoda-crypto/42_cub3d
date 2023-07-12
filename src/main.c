@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/12 16:52:47 by enogaWa          ###   ########.fr       */
+/*   Updated: 2023/07/12 18:50:40 by enogaWa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,69 +46,39 @@
 // 	free_data(&data);
 // 	return (0);
 // }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-// void	draw_cell(t_mlx *mlx, t_map *map, size_t cell_x, size_t cell_y)
-// {
-// 	size_t	pixel_x;
-// 	size_t	pixel_y;
-// 	size_t	pixel_x_end;
-// 	size_t	pixel_y_end;
-// 	size_t	pixel_x_start;
-
-// 	pixel_x = cell_x * MINIMAP_TILE + (WINDOW_WIDTH - MINIMAP_WIDTH);
-// 	pixel_y = cell_y * MINIMAP_TILE + (WINDOW_HEIGHT - MINIMAP_HEIGHT);
-// 	pixel_x_end = pixel_x + MINIMAP_TILE;
-// 	pixel_y_end = pixel_y + MINIMAP_TILE;
-// 	pixel_x_start = pixel_x;
-// 	while (pixel_y < pixel_y_end)
-// 	{
-// 		pixel_x = pixel_x_start;
-// 		while (pixel_x < pixel_x_end)
-// 		{
-// 			if (map->grid[cell_y][cell_x] == WALL)
-// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr,
-// 					pixel_x, pixel_y, COLOR_WALL);
-// 			else if (map->grid[cell_y][cell_x] == SPACE)
-// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr,
-// 					pixel_x, pixel_y, COLOR_SPACE);
-// 			else if (map->grid[cell_y][cell_x] == PLAYER)
-// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr,
-// 					pixel_x, pixel_y, COLOR_PLAYER);
-// 			pixel_x++;
-// 		}
-// 		pixel_y++;
-// 	}
-// }
-
-void update_pixels(size_t *pixel_x, size_t *pixel_y, size_t cell_x, size_t cell_y)
+void	update_pixels(size_t *pixel_x, size_t *pixel_y,
+						size_t cell_x, size_t cell_y)
 {
 	*pixel_x = cell_x * MINIMAP_TILE + (WINDOW_WIDTH - MINIMAP_WIDTH);
 	*pixel_y = cell_y * MINIMAP_TILE + (WINDOW_HEIGHT - MINIMAP_HEIGHT);
 }
 
-void set_pixel_color(t_mlx *mlx, size_t pixel_x, size_t pixel_y, char cell_type)
+void	set_pixel_color(t_mlx *mlx,
+						size_t pixel_x, size_t pixel_y, char cell_type)
 {
 	if (cell_type == WALL)
 		mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_WALL);
 	else if (cell_type == SPACE)
-		mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_SPACE);
+		mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr,
+			pixel_x, pixel_y, COLOR_SPACE);
 	else if (cell_type == PLAYER)
-		mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_PLAYER);
+		mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr,
+			pixel_x, pixel_y, COLOR_PLAYER);
 }
 
 void	draw_cell(t_mlx *mlx, t_map *map, size_t cell_x, size_t cell_y)
 {
 	size_t	pixel_x;
 	size_t	pixel_y;
+	char	cell_type;
+	size_t	temp_pixel_x;
 
+	cell_type = map->grid[cell_y][cell_x];
 	update_pixels(&pixel_x, &pixel_y, cell_x, cell_y);
-	char cell_type = map->grid[cell_y][cell_x];
-
 	while (pixel_y < pixel_y + MINIMAP_TILE)
 	{
-		size_t temp_pixel_x = pixel_x;
+		temp_pixel_x = pixel_x;
 		while (temp_pixel_x < pixel_x + MINIMAP_TILE)
 		{
 			set_pixel_color(mlx, temp_pixel_x, pixel_y, cell_type);
@@ -136,229 +106,186 @@ void	draw_minimap(t_mlx *mlx, t_map *map)
 	}
 }
 
-// void	cast_ray(t_map *map, t_player *player, t_ray *ray)
-// {
-// 	int	mapX;
-// 	int	mapY;
-// 	double sideDistX;
-// 	double sideDistY;
-// 	double deltaDistX;
-// 	double deltaDistY;
-// 	double perpWallDist;
-
-// 	mapX = (int)player->x;
-// 	mapY = (int)player->y;
-// 	ray->dir_x = cos(ray->angle);
-// 	ray->dir_y = sin(ray->angle);
-// 	deltaDistX = fabs(1 / ray->dir_x);
-// 	deltaDistY = fabs(1 / ray->dir_y);
-
-// 	ray->hit_wall = false;
-
-// 	if (ray->dir_x < 0)
-// 	{
-// 		ray->step_x = -1;
-// 		sideDistX = (player->x - mapX) * deltaDistX;
-// 	}
-// 	else
-// 	{
-// 		ray->step_x = 1;
-// 		sideDistX = (mapX + 1.0 - player->x) * deltaDistX;
-// 	}
-// 	if (ray->dir_y < 0)
-// 	{
-// 		ray->step_y = -1;
-// 		sideDistY = (player->y - mapY) * deltaDistY;
-// 	}
-// 	else
-// 	{
-// 		ray->step_y = 1;
-// 		sideDistY = (mapY + 1.0 - player->y) * deltaDistY;
-// 	}
-// 	while (ray->hit_wall == false)
-// 	{
-// 		if (sideDistX < sideDistY)
-// 		{
-// 			sideDistX += deltaDistX;
-// 			mapX += ray->step_x;
-// 			ray->side = 0;
-// 		}
-// 		else
-// 		{
-// 			sideDistY += deltaDistY;
-// 			mapY += ray->step_y;
-// 			ray->side = 1;
-// 		}
-// 		if (map->grid[mapY][mapX] == WALL)
-// 			ray->hit_wall = true;
-// 	}
-
-// 		if (ray->side == 0)
-// 	 	perpWallDist = (mapX - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
-// 		else
-// 	 	perpWallDist = (mapY - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
-
-// 	ray->distance = perpWallDist;
-// }
-
-void calculate_distance(t_calculations *calc, t_player *player, t_ray *ray)
+void	init_ray(t_player *player, t_ray *ray, t_helper *helper)
 {
-	double perpWallDist;
-
-	if (ray->side == 0)
-	 	perpWallDist = (calc->mapX - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
-	else
-	 	perpWallDist = (calc->mapY - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
-
-	ray->distance = perpWallDist;
+	ray->dir_x = cos(ray->angle);
+	ray->dir_y = sin(ray->angle);
+	helper->mapX = (int)player->x;
+	helper->mapY = (int)player->y;
+	helper->deltaDistX = fabs(1 / ray->dir_x);
+	helper->deltaDistY = fabs(1 / ray->dir_y);
 }
 
-void find_wall(t_calculations *calc, t_map *map, t_ray *ray, double deltaDistX, double deltaDistY)
-{
-	while (ray->hit_wall == false)
-	{
-		if (calc->sideDistX < calc->sideDistY)
-		{
-			calc->sideDistX += deltaDistX;
-			calc->mapX += ray->step_x;
-			ray->side = 0;
-		}
-		else
-		{
-			calc->sideDistY += deltaDistY;
-			calc->mapY += ray->step_y;
-			ray->side = 1;
-		}
-		if (map->grid[calc->mapY][calc->mapX] == WALL)
-			ray->hit_wall = true;
-	}
-}
-
-void set_ray_direction(t_calculations *calc, t_player *player, t_ray *ray, double deltaDistX, double deltaDistY)
+void	calculate_step_side_dist(t_player *player, t_ray *ray, t_helper *helper)
 {
 	if (ray->dir_x < 0)
 	{
 		ray->step_x = -1;
-		calc->sideDistX = (player->x - calc->mapX) * deltaDistX;
+		helper->sideDistX = (player->x - helper->mapX) * helper->deltaDistX;
 	}
 	else
 	{
 		ray->step_x = 1;
-		calc->sideDistX = (calc->mapX + 1.0 - player->x) * deltaDistX;
+		helper->sideDistX = (helper->mapX + 1.0 - player->x)
+			* helper->deltaDistX;
 	}
 	if (ray->dir_y < 0)
 	{
 		ray->step_y = -1;
-		calc->sideDistY = (player->y - calc->mapY) * deltaDistY;
+		helper->sideDistY = (player->y - helper->mapY) * helper->deltaDistY;
 	}
 	else
 	{
 		ray->step_y = 1;
-		calc->sideDistY = (calc->mapY + 1.0 - player->y) * deltaDistY;
+		helper->sideDistY = (helper->mapY + 1.0 - player->y)
+			* helper->deltaDistY;
 	}
 }
 
-void init_ray(t_calculations *calc, t_player *player, t_ray *ray)
+void	perform_dda(t_map *map, t_ray *ray, t_helper *helper)
 {
-	calc->mapX = (int)player->x;
-	calc->mapY = (int)player->y;
-	ray->dir_x = cos(ray->angle);
-	ray->dir_y = sin(ray->angle);
+	while (ray->hit_wall == false)
+	{
+		if (helper->sideDistX < helper->sideDistY)
+		{
+			helper->sideDistX += helper->deltaDistX;
+			helper->mapX += ray->step_x;
+			ray->side = 0;
+		}
+		else
+		{
+			helper->sideDistY += helper->deltaDistY;
+			helper->mapY += ray->step_y;
+			ray->side = 1;
+		}
+		if (map->grid[helper->mapY][helper->mapX] == WALL)
+			ray->hit_wall = true;
+	}
 }
 
-void cast_ray(t_map *map, t_player *player, t_ray *ray)
+void	calculate_wall_distance(t_player *player, t_ray *ray, t_helper *helper)
 {
-	t_calculations calc;
-	double deltaDistX;
-	double deltaDistY;
+	double	perpWallDist;
 
-	init_ray(&calc, player, ray);
-	deltaDistX = fabs(1 / ray->dir_x);
-	deltaDistY = fabs(1 / ray->dir_y);
-	set_ray_direction(&calc, player, ray, deltaDistX, deltaDistY);
-	find_wall(&calc, map, ray, deltaDistX, deltaDistY);
-	calculate_distance(&calc, player, ray);
-}//
+	if (ray->side == 0)
+		perpWallDist = (helper->mapX - player->x
+				+ (1 - ray->step_x) / 2) / ray->dir_x;
+	else
+		perpWallDist = (helper->mapY - player->y
+				+ (1 - ray->step_y) / 2) / ray->dir_y;
+	ray->distance = perpWallDist;
+}
+
+void	cast_ray(t_map *map, t_player *player, t_ray *ray)
+{
+	t_helper	helper;
+
+	init_ray(player, ray, &helper);
+	ray->hit_wall = false;
+	calculate_step_side_dist(player, ray, &helper);
+	perform_dda(map, ray, &helper);
+	calculate_wall_distance(player, ray, &helper);
+}
 
 void	load_textures(t_mlx *mlx)
 {
-	int i;
-	int	x;
-	int	y;
+	int		i;
+	int		x;
+	int		y;
+	char	*texture_files[4];
 
-	char *texture_files[4] = {"texture/north_texture.xpm", "texture/south_texture.xpm", "texture/east_texture.xpm", "texture/west_texture.xpm"};
-	for (i = 0; i < 4; i++)
+	texture_files[0] = "texture/north_texture.xpm";
+	texture_files[1] = "texture/south_texture.xpm";
+	texture_files[2] = "texture/east_texture.xpm";
+	texture_files[3] = "texture/west_texture.xpm";
+	i = 0;
+	while (i < 4)
 	{
 		mlx->texture[i].img = mlx_xpm_file_to_image(mlx->mlx_ptr, texture_files[i], &x, &y);
 		if (mlx->texture[i].img == NULL)
 			exit(1);
 		mlx->texture[i].data = mlx_get_data_addr(mlx->texture[i].img, &mlx->texture[i].bpp, &mlx->texture[i].size_l, &mlx->texture[i].endian);
+		i++;
 	}
 }
-void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
+
+void calc_wall(t_wall *wall, t_player *player, t_ray *ray)
 {
-	size_t	y;
-	double	corrected_distance;
-	double	strip_height;
-	double	top_pixel;
-	double	bottom_pixel;
+	double corrected_distance;
 
 	corrected_distance = ray->distance * cos(ray->angle - player->direction);
-	strip_height = WINDOW_HEIGHT * 1 / (corrected_distance);
-	top_pixel = ((double)WINDOW_HEIGHT / 2.0) - (strip_height / 2.0);
-	bottom_pixel = ((double)WINDOW_HEIGHT / 2.0) + (strip_height / 2.0);
-	if (top_pixel < 0)
-		top_pixel = 0;
-	if (bottom_pixel > WINDOW_HEIGHT)
-		bottom_pixel = WINDOW_HEIGHT;
+	wall->strip_height = WINDOW_HEIGHT * 1 / corrected_distance;
+	wall->top_pixel = ((double)WINDOW_HEIGHT / 2.0) - (wall->strip_height / 2.0);
+	wall->bottom_pixel = ((double)WINDOW_HEIGHT / 2.0) + (wall->strip_height / 2.0);
 
-	int texture_num;
+	if (wall->top_pixel < 0)
+		wall->top_pixel = 0;
+	if (wall->bottom_pixel > WINDOW_HEIGHT)
+		wall->bottom_pixel = WINDOW_HEIGHT;
+}
 
+void set_texture_num(t_wall *wall, t_ray *ray)
+{
 	if (ray->side && ray->dir_y < 0)
-		texture_num = 0;
+		wall->texture_num = 0;
 	else if (ray->side && ray->dir_y >= 0)
-		texture_num = 1;
+		wall->texture_num = 1;
 	else if (!ray->side && ray->dir_x > 0)
-		texture_num = 2;
+		wall->texture_num = 2;
 	else
-		texture_num = 3;
+		wall->texture_num = 3;
+}
+
+void texture_mapping(t_mlx *mlx, t_wall *wall, t_player *player, t_ray *ray, size_t x, size_t y)
+{
+	double wallX;
+	int texture_x, texture_y, color;
+
+	if (ray->side == 0)
+		wallX = player->y + ray->distance * ray->dir_y;
+	else
+		wallX = player->x + ray->distance * ray->dir_x;
+	wallX -= floor(wallX);
+
+	texture_x = (int)(wallX * (double)TILE_SIZE);
+	if (ray->side == 0 && ray->dir_x > 0)
+		texture_x = TILE_SIZE - texture_x - 1;
+	if (ray->side == 1 && ray->dir_y < 0)
+		texture_x = TILE_SIZE - texture_x - 1;
+
+	texture_y = (y - wall->top_pixel) * TILE_SIZE / wall->strip_height;
+
+	color = *(int *)(mlx->texture[wall->texture_num].data + (texture_y * mlx->texture[wall->texture_num].size_l + texture_x * (mlx->texture[wall->texture_num].bpp / 8)));
+
+	mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, color);
+}
+
+void draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
+{
+	t_wall wall;
+	size_t y;
+
+	calc_wall(&wall, player, ray);
+	set_texture_num(&wall, ray);
 
 	y = 0;
 	while (y < WINDOW_HEIGHT)
 	{
-		if (y < top_pixel)
+		if (y < wall.top_pixel)
 		{
 			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, COLOR_SKY);
 		}
-		else if (y > bottom_pixel)
+		else if (y > wall.bottom_pixel)
 		{
 			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, COLOR_GROUND);
 		}
 		else
 		{
-
-  double wallX;
-    if (ray->side == 0)
-        wallX = player->y + ray->distance * ray->dir_y;
-    else
-        wallX = player->x + ray->distance * ray->dir_x;
-    wallX -= floor(wallX);
-    int texture_x = (int)(wallX * (double)TILE_SIZE);
-    if (ray->side == 0 && ray->dir_x > 0)
-        texture_x = TILE_SIZE - texture_x - 1;
-	if (ray->side == 1 && ray->dir_y < 0)
-        texture_x = TILE_SIZE - texture_x - 1;
-     texture_x = TILE_SIZE - texture_x - 1;
-
- 		int texture_y = (y - top_pixel) * TILE_SIZE / strip_height;
-
-int color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + texture_x * (mlx->texture[texture_num].bpp / 8)));
-
- 			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, color);
+			texture_mapping(mlx, &wall, player, ray, x, y);
 		}
 		y++;
 	}
-}
+}//
 
 void	ray_casting(t_mlx *mlx)
 {
@@ -536,4 +463,3 @@ int	main(void)
 	mlx_loop(mlx.mlx_ptr);
 	return (0);
 }
-
