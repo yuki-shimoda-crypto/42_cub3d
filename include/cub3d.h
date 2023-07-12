@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/13 05:34:13 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/13 06:21:35 by enogaWa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,19 @@ enum	e_input
 	INPUT_CEILING,
 };
 
+void			mlx_func(t_game_data *data);
+void			init_game_data(t_game_data *data);
+int				event_key_press(int key_num, t_mlx *mlx);
+int				destroy_mlx(t_mlx *mlx);
+void			init_mlx(t_mlx *mlx, t_game_data *data);
+void			init_map(t_map *map, t_map_node *map_node);
+void			init_player(char **grid, t_player *player);
+void			change_move_value(t_map *map, t_player *player, double new_x, double new_y);
+int				ray_cast_and_draw(void *mlx);
+void			draw_wall_strip(t_mlx *mlx, t_ray *ray, size_t x, t_game_data *data);
+void			load_textures(t_mlx *mlx, t_game_data *data);
+void			make_color(t_game_data *data, long *f_color, long *c_color);
+void			cast_ray(t_map *map, t_player *player, t_ray *ray);
 void			check_color(t_game_data *data);
 void			check_cub_file(t_cub_file_node *node, t_game_data *data);
 void			check_file_element(t_cub_file_count *count);

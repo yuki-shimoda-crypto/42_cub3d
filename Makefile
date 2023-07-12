@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+         #
+#    By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/16 19:51:43 by yshimoda          #+#    #+#              #
-#    Updated: 2023/07/13 01:45:06 by yshimoda         ###   ########.fr        #
+#    Updated: 2023/07/13 06:20:24 by enogaWa          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,6 +37,15 @@ SRCS		=	src/can_move.c							\
 				src/make_map.c							\
 				src/read_cub_file.c						\
 				src/queue.c								\
+				src/ray_initialization.c				\
+				src/texture_handling.c					\
+				src/drawing.c							\
+				src/ray_casting.c						\
+				src/player.c							\
+				src/map.c								\
+				src/mlx.c								\
+				src/game_key_handling.c					\
+				src/game_loop.c							\
 				src/safe_mlx.c
 
 OBJS		=	$(SRCS:%.c=$(OBJ_DIR)/%.o)
