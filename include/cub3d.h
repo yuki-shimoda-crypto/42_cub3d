@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/12 17:20:14 by enogaWa          ###   ########.fr       */
+/*   Updated: 2023/07/12 23:26:47 by enogaWa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,93 @@ enum	e_input
 	INPUT_CEILING,
 };
 
+typedef struct s_img	t_img;
+typedef struct s_map	t_map;
+typedef struct s_player	t_player;
+typedef struct s_ray	t_ray;
+typedef struct s_mlx	t_mlx;
+
+struct s_img
+{
+	void	*img;
+	char	*data;
+	int		bpp;
+	int		size_l;
+	int		endian;
+};
+
+struct s_map
+{
+	char	**grid;
+	size_t	width;
+	size_t	height;
+};
+
+// fov: field of view
+struct s_player
+{
+	double	x;
+	double	y;
+	double	direction;
+	double	fov;
+};
+
+struct s_ray
+{
+	double	angle;
+	double	distance;
+	bool	hit_wall;
+	bool	hit_vertical;
+	int		side;
+	double	dir_x;
+	double	dir_y;
+	int		step_x;
+	int		step_y;
+};
+
+struct s_mlx
+{
+	void		*mlx_ptr;
+	void		*win_ptr;
+	t_map		map;
+	t_player	player;
+	t_ray		ray;
+	t_img		texture[4];
+};
+
+typedef struct s_helper
+{
+	int mapX;
+	int mapY;
+	double sideDistX;
+	double sideDistY;
+	double deltaDistX;
+	double deltaDistY;
+} t_helper;
+
+typedef struct s_draw
+{
+	double top_pixel;
+	double bottom_pixel;
+	int texture_num;
+	double wallX;
+} t_draw;
+
+void			handle_rotate_key(int key_num, t_mlx *mlx);
+void			handle_move_key(int key_num, t_mlx *mlx);
+void			handle_escape_key(t_mlx *mlx);
+int				destroy_mlx(t_mlx *mlx);
+void			init_mlx(t_mlx *mlx);
+void			init_player(t_player *player);
+void			printf_map(char **grid);
+void			init_map(t_map *map, t_player *player);
+void			color_pixel(t_mlx *mlx, t_draw *draw, size_t x, size_t y);
+void			load_textures(t_mlx *mlx);
+void			calc_wall_strip(t_draw *draw, t_player *player, t_ray *ray);
+void			determine_texture(t_draw *draw, t_ray *ray);
+void			calc_texture_coords(t_draw *draw, t_player *player, t_ray *ray);
+void			cast_ray(t_map *map, t_player *player, t_ray *ray);
+void			draw_minimap(t_mlx *mlx, t_map *map);
 void			check_color(t_game_data *data);
 void			check_cub_file(t_cub_file_node *node, t_game_data *data);
 void			check_file_element(t_cub_file_count *count);
@@ -223,86 +310,6 @@ void	*safe_mlx_init(void);
 #define FOV				(60 * (M_PI / 180))
 
 #define MOVE_SPEED		0.1
-
-typedef struct s_img	t_img;
-typedef struct s_map	t_map;
-typedef struct s_player	t_player;
-typedef struct s_ray	t_ray;
-typedef struct s_mlx	t_mlx;
-
-struct s_img
-{
-	void	*img;
-	char	*data;
-	int		bpp;
-	int		size_l;
-	int		endian;
-};
-
-struct s_map
-{
-	char	**grid;
-	size_t	width;
-	size_t	height;
-};
-
-// fov: field of view
-struct s_player
-{
-	double	x;
-	double	y;
-	double	direction;
-	double	fov;
-};
-
-struct s_ray
-{
-	double	angle;
-	double	distance;
-	bool	hit_wall;
-	bool	hit_vertical;
-	int		side;
-	double	dir_x;
-	double	dir_y;
-	int		step_x;
-	int		step_y;
-};
-
-struct s_mlx
-{
-	void		*mlx_ptr;
-	void		*win_ptr;
-	t_map		map;
-	t_player	player;
-	t_ray		ray;
-	t_img		texture[4];
-};
-
-// typedef struct s_calculations
-// {
-// 	int mapX;
-// 	int mapY;
-// 	double sideDistX;
-// 	double sideDistY;
-// } t_calculations;
-
-typedef struct s_helper
-{
-	int mapX;
-	int mapY;
-	double sideDistX;
-	double sideDistY;
-	double deltaDistX;
-	double deltaDistY;
-} t_helper;
-
-typedef struct s_wall
-{
-	size_t top_pixel;
-	size_t bottom_pixel;
-	int texture_num;
-	double strip_height;
-} t_wall;
 
 
 #endif

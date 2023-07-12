@@ -6,7 +6,7 @@
 #    By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/16 19:51:43 by yshimoda          #+#    #+#              #
-#    Updated: 2023/07/12 16:21:49 by enogaWa          ###   ########.fr        #
+#    Updated: 2023/07/12 23:18:17 by enogaWa          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,13 @@ SRCS		=	src/can_move.c							\
 				src/make_map.c							\
 				src/read_cub_file.c						\
 				src/queue.c								\
-				src/safe_mlx.c
+				src/safe_mlx.c							\
+				src/file_raycasting.c					\
+				src/file_texture.c						\
+				src/file_map.c							\
+				src/file_player.c						\
+				src/file_movement.c						\
+				src/file_minimap.c
 
 OBJS		=	$(SRCS:%.c=$(OBJ_DIR)/%.o)
 DEBUG_OBJS	=	$(SRCS:%.c=$(DEBUG_DIR)/%.o)
