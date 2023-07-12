@@ -6,7 +6,7 @@
 #    By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/16 19:51:43 by yshimoda          #+#    #+#              #
-#    Updated: 2023/07/04 22:13:51 by yshimoda         ###   ########.fr        #
+#    Updated: 2023/07/13 00:11:16 by yshimoda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,7 +46,7 @@ INCLUDE		=	-I $(INC_DIR) -I $(MLX_DIR)
 MATH		=	-lm
 LIBFT		=	$(LIBFT_DIR)/libft.a
 MLX			=	$(MLX_DIR)/libmlx.a
-LIBS		=	$(MATH) $(LIBFT) $(MLX)
+LIBS		=	$(MATH) $(LIBFT) $(MLX) -lXext -lX11
 
 CC			=	cc
 # CFLAGS		=	-Wall -Wextra -Werror
@@ -59,10 +59,9 @@ NORM		=	norminette
 ifeq ($(shell uname -s), Linux)
 DEBUG_FLUG		+=	-fsanitize=leak
 CHECK_FUNC	=	nm -u $(NAME) | grep -vwE "U ($(ALLOW_FUNC))"
-LIBS		+=	-lXext -lX11
 else
 CHECK_FUNC	=	nm -u $(NAME) | grep -vwE "_($(ALLOW_FUNC))"
-LIBS		+=	-lmlx -framework OpenGL -framework AppKit
+LIBS		+=	-L /usr/X11R6/lib -framework OpenGL -framework AppKit
 endif
 
 ifneq ($(shell command -v ccache), )
