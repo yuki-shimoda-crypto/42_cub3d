@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/12 17:20:09 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/13 00:24:52 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,6 @@ struct s_mlx
 struct	s_game_data
 {
 	t_map_node		*map_node;
-//	char			orientation;
 	char			*n_texture;
 	char			*s_texture;
 	char			*w_texture;

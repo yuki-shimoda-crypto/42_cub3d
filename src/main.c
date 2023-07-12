@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/13 00:18:16 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/13 00:30:52 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,21 +133,23 @@ void	load_textures(t_mlx *mlx, t_game_data *data)
 	int i;
 	int	x;
 	int	y;
-
 	char *texture_files[4];
 
 	texture_files[0] = data->n_texture;
 	texture_files[1] = data->s_texture;
 	texture_files[2] = data->e_texture;
 	texture_files[3] = data->w_texture;
-	for (i = 0; i < 4; i++)
+	i = 0;
+	while (i < 4)
 	{
 		mlx->texture[i].img = mlx_xpm_file_to_image(mlx->mlx_ptr, texture_files[i], &x, &y);
 		if (mlx->texture[i].img == NULL)
-			exit(1);
+			exit_error("Can not file to mlx image\n", false);
 		mlx->texture[i].data = mlx_get_data_addr(mlx->texture[i].img, &mlx->texture[i].bpp, &mlx->texture[i].size_l, &mlx->texture[i].endian);
+		i++;
 	}
 }
+
 void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 {
 	size_t	y;
@@ -160,8 +162,6 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 	strip_height = WINDOW_HEIGHT * 1 / (corrected_distance);
 	top_pixel = ((double)WINDOW_HEIGHT / 2.0) - (strip_height / 2.0);
 	bottom_pixel = ((double)WINDOW_HEIGHT / 2.0) + (strip_height / 2.0);
-	if (top_pixel < 0)
-		top_pixel = 0;
 	if (bottom_pixel > WINDOW_HEIGHT)
 		bottom_pixel = WINDOW_HEIGHT;
 
@@ -261,19 +261,19 @@ bool	is_start(t_player *player, char c, size_t x, size_t y)
 	return (true);
 }
 
-void	init_player(t_map *map, t_player *player)
+void	init_player(char **grid, t_player *player)
 {
 	size_t	x;
 	size_t	y;
 
 	player->fov = FOV;
 	y = 0;
-	while (map->grid[y])
+	while (grid[y])
 	{
 		x = 0;
-		while (map->grid[y][x])
+		while (grid[y][x])
 		{
-			if (is_start(player, map->grid[y][x], x, y))
+			if (is_start(player, grid[y][x], x, y))
 				return ;
 			x++;
 		}
@@ -306,11 +306,15 @@ void	init_map(t_map *map, t_map_node *map_node)
 		map_node = map_node->next;
 	}
 	map->grid = calloc(sizeof(char *), map->height + 1);
+	if (!map->grid)
+		exit_error(NULL, true);
 	map_node = head;
 	y = 0;
 	while (y < map->height)
 	{
 		map->grid[y] = strdup(map_node->line);
+		if (!map->grid[y])
+			exit_error(NULL, true);
 		map_node = map_node->next;
 		y++;
 	}
@@ -318,10 +322,10 @@ void	init_map(t_map *map, t_map_node *map_node)
 
 void	init_mlx(t_mlx *mlx, t_game_data *data)
 {
-	mlx->mlx_ptr = mlx_init();
-	mlx->win_ptr = mlx_new_window(mlx->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "mlx");
+	mlx->mlx_ptr = safe_mlx_init();
+	mlx->win_ptr = safe_mlx_new_window(mlx->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "mlx");
 	init_map(&mlx->map, data->map_node);
-	init_player(&mlx->map, &mlx->player);
+	init_player(mlx->map.grid, &mlx->player);
 	load_textures(mlx, data);
 }
 
