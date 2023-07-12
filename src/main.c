@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/12 19:21:16 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/13 00:18:16 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,13 +128,18 @@ void cast_ray(t_map *map, t_player *player, t_ray *ray)
 }
 
 
-void	load_textures(t_mlx *mlx)
+void	load_textures(t_mlx *mlx, t_game_data *data)
 {
 	int i;
 	int	x;
 	int	y;
 
-	char *texture_files[4] = {"texture/north_texture.xpm", "texture/south_texture.xpm", "texture/east_texture.xpm", "texture/west_texture.xpm"};
+	char *texture_files[4];
+
+	texture_files[0] = data->n_texture;
+	texture_files[1] = data->s_texture;
+	texture_files[2] = data->e_texture;
+	texture_files[3] = data->w_texture;
 	for (i = 0; i < 4; i++)
 	{
 		mlx->texture[i].img = mlx_xpm_file_to_image(mlx->mlx_ptr, texture_files[i], &x, &y);
@@ -184,20 +189,7 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 		}
 		else
 		{
-//  			int texture_y = (y - top_pixel) * TILE_SIZE / strip_height;
-//  			int color = *(int*)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l));
-//  			int bytes_per_pixel = mlx->texture[texture_num].bpp / 8; // calculate bytes per pixel
-//  			color = *(int*)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l * bytes_per_pixel));
-//  			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, color);
-//  			int x, y;
 
-// int texX;
-// if (ray->side == 0) // Y-side
-//     texX = (int)(player->y + ray->distance * ray->dir_y) % TILE_SIZE;
-// else // X-side
-//     texX = (int)(player->x + ray->distance * ray->dir_x) % TILE_SIZE;
-// 
-//
 
   double wallX; // the exact position where the wall was hit
     if (ray->side == 0) // If its a y-axis wall
@@ -218,25 +210,11 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 
 int color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + texture_x * (mlx->texture[texture_num].bpp / 8)));
 
-//int color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + texX * (mlx->texture[texture_num].bpp / 8)));
-
-//color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + x * TILE_SIZE/ (size_t)strip_height * (mlx->texture[texture_num].bpp / 8)));
-//color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + x * (mlx->texture[texture_num].bpp / 8) % (size_t)strip_height));
 
 
-//  			int texture_y = (y - top_pixel) * TILE_SIZE / strip_height;
-//  			int color = *(int*)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l));
+
  			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, color);
 
-// 			if (ray->side && ray->dir_y < 0)
-// //				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, (COLOR_NORTH));
-// 				mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->texture_north, x, y);
-// 			else if (ray->side && ray->dir_y >= 0)
-// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, (COLOR_SOUTH));
-// 			else if (!ray->side && ray->dir_x > 0)
-// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, COLOR_EAST);
-// 			else
-// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, (COLOR_WEST));
 		}
 		y++;
 	}
@@ -262,7 +240,6 @@ void	ray_casting(t_mlx *mlx)
 
 int	draw(void *mlx)
 {
-//	draw_minimap(mlx, &((t_mlx *)mlx)->map);
 	ray_casting(mlx);
 	return (0);
 }
@@ -345,9 +322,7 @@ void	init_mlx(t_mlx *mlx, t_game_data *data)
 	mlx->win_ptr = mlx_new_window(mlx->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "mlx");
 	init_map(&mlx->map, data->map_node);
 	init_player(&mlx->map, &mlx->player);
-	load_textures(mlx);
-//	init_ray(mlx);
-//	printf_map(&mlx->map);
+	load_textures(mlx, data);
 }
 
 int	destroy_mlx(t_mlx *mlx)
@@ -463,6 +438,7 @@ int	main(int argc, const char *argv[])
 	check_file_name(argc, argv);
 	cub_file_node = read_cub_file(argv[1]);
 	check_cub_file(cub_file_node, &data);
+
 	mlx_func(&data);
 	free_cub_file_node(cub_file_node);
 	free_data(&data);
