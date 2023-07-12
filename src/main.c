@@ -16,54 +16,6 @@
 #include <stdio.h>
 #include <math.h>
 
-void	draw_cell(t_mlx *mlx, t_map *map, size_t cell_x, size_t cell_y)
-{
-	size_t	pixel_x;
-	size_t	pixel_y;
-	size_t	pixel_x_end;
-	size_t	pixel_y_end;
-	size_t	pixel_x_start;
-
-	pixel_x = cell_x * MINIMAP_TILE + (WINDOW_WIDTH - MINIMAP_WIDTH);
-	pixel_y = cell_y * MINIMAP_TILE + (WINDOW_HEIGHT - MINIMAP_HEIGHT);
-	pixel_x_end = pixel_x + MINIMAP_TILE;
-	pixel_y_end = pixel_y + MINIMAP_TILE;
-	pixel_x_start = pixel_x;
-	while (pixel_y < pixel_y_end)
-	{
-		pixel_x = pixel_x_start;
-		while (pixel_x < pixel_x_end)
-		{
-			if (map->grid[cell_y][cell_x] == WALL)
-				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_WALL);
-			else if (map->grid[cell_y][cell_x] == SPACE)
-				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_SPACE);
-			else if (map->grid[cell_y][cell_x] == PLAYER)
-				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_PLAYER);
-			pixel_x++;
-		}
-		pixel_y++;
-	}
-}
-
-void	draw_minimap(t_mlx *mlx, t_map *map)
-{
-	size_t	x;
-	size_t	y;
-
-	y = 0;
-	while (y < MAP_HEIGHT)
-	{
-		x = 0;
-		while (x < MAP_WIDTH)
-		{
-			draw_cell(mlx, map, x, y);
-			x++;
-		}
-		y++;
-	}
-}
-
 void cast_ray(t_map *map, t_player *player, t_ray *ray)
 {
     int mapX = (int)player->x;

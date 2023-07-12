@@ -47,25 +47,10 @@
 # endif
 
 #define TILE_SIZE		64
-#define MAP_HEIGHT		16
-#define MAP_WIDTH		16
-
 #define WINDOW_WIDTH	800
 #define WINDOW_HEIGHT	800
 
-// #define SPACE			'0'
-// #define WALL			'1'
-// #define PLAYER			'2'
-
-// minimap
-#define MINIMAP_SCALE	4
-#define MINIMAP_TILE	(TILE_SIZE / MINIMAP_SCALE)
-#define MINIMAP_WIDTH	(WINDOW_WIDTH / MINIMAP_SCALE)
-#define MINIMAP_HEIGHT	(WINDOW_HEIGHT / MINIMAP_SCALE)
-#define PLAYER_SIZE		(TILE_SIZE / 4)
-#define COLOR_SPACE		0xFFFFFF
-#define COLOR_WALL		0x777777
-#define COLOR_PLAYER	0xFF0000
+#define WALL			'1'
 
 // direction
 #define NORTH			(270 * (M_PI / 180))
