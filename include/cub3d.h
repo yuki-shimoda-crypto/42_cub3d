@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/13 01:21:18 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/13 01:51:47 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,34 +50,24 @@
 #define MAP_HEIGHT		16
 #define MAP_WIDTH		16
 
-#define WINDOW_WIDTH	(MAP_WIDTH * TILE_SIZE)
-#define WINDOW_HEIGHT	(MAP_HEIGHT * TILE_SIZE)
+#define WINDOW_WIDTH	800
+#define WINDOW_HEIGHT	800
 
+// #define SPACE			'0'
+// #define WALL			'1'
+// #define PLAYER			'2'
+
+// minimap
 #define MINIMAP_SCALE	4
 #define MINIMAP_TILE	(TILE_SIZE / MINIMAP_SCALE)
 #define MINIMAP_WIDTH	(WINDOW_WIDTH / MINIMAP_SCALE)
 #define MINIMAP_HEIGHT	(WINDOW_HEIGHT / MINIMAP_SCALE)
-
 #define PLAYER_SIZE		(TILE_SIZE / 4)
-
-#define SPACE			'0'
-#define WALL			'1'
-#define PLAYER			'2'
-
-// minimap
 #define COLOR_SPACE		0xFFFFFF
 #define COLOR_WALL		0x777777
 #define COLOR_PLAYER	0xFF0000
 
-// cub3d
-#define COLOR_SKY		0xFFFFFF
-#define COLOR_GROUND	0x000000
-#define COLOR_NORTH		0x111111
-#define COLOR_SOUTH		0x333333
-#define COLOR_EAST		0x555555
-#define COLOR_WEST		0x777777
-#define COLOR_RAY		0x0000FF
-
+// direction
 #define NORTH			(270 * (M_PI / 180))
 #define SOUTH			(90 * (M_PI / 180))
 #define EAST			(0 * (M_PI / 180))
@@ -85,7 +75,7 @@
 
 #define FOV				(60 * (M_PI / 180))
 
-#define MOVE_SPEED		0.1
+#define MOVE_SPEED		0.3
 
 typedef struct s_game_data			t_game_data;
 typedef struct s_map_node			t_map_node;

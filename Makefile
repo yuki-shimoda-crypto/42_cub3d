@@ -6,7 +6,7 @@
 #    By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/16 19:51:43 by yshimoda          #+#    #+#              #
-#    Updated: 2023/07/13 00:11:16 by yshimoda         ###   ########.fr        #
+#    Updated: 2023/07/13 01:45:06 by yshimoda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,8 +49,7 @@ MLX			=	$(MLX_DIR)/libmlx.a
 LIBS		=	$(MATH) $(LIBFT) $(MLX) -lXext -lX11
 
 CC			=	cc
-# CFLAGS		=	-Wall -Wextra -Werror
-CFLAGS		=	-Wall -Wextra
+CFLAGS		=	-Wall -Wextra -Werror -O2
 DEBUG_FLUG	=	-g -fsanitize=address -fsanitize=undefined
 
 ALLOW_FUNC	=	open|close|read|write|printf|malloc|free|perror|strerror|exit

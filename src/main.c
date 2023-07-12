@@ -165,6 +165,7 @@ void	draw_wall_strip(t_mlx *mlx, t_ray *ray, size_t x, t_game_data *data)
 	double	strip_height;
 	double	top_pixel;
 	double	bottom_pixel;
+	int		color;
 
 	corrected_distance = ray->distance * cos(ray->angle - mlx->player.direction);
 	strip_height = WINDOW_HEIGHT * 1 / (corrected_distance);
@@ -200,30 +201,29 @@ void	draw_wall_strip(t_mlx *mlx, t_ray *ray, size_t x, t_game_data *data)
 		{
 
 
-  double wallX; // the exact position where the wall was hit
-    if (ray->side == 0) // If its a y-axis wall
-        wallX = mlx->player.y + ray->distance * ray->dir_y;
-    else // if its an x-axis wall
-        wallX = mlx->player.x + ray->distance * ray->dir_x;
-    wallX -= floor(wallX); // only keep the fractional part
+	double wallX; // the exact position where the wall was hit
+		if (ray->side == 0) // If its a y-axis wall
+			wallX = mlx->player.y + ray->distance * ray->dir_y;
+		else // if its an x-axis wall
+			wallX = mlx->player.x + ray->distance * ray->dir_x;
+		wallX -= floor(wallX); // only keep the fractional part
 
-    // x coordinate on the texture
-    int texture_x = (int)(wallX * (double)TILE_SIZE);
-    if (ray->side == 0 && ray->dir_x > 0)
-        texture_x = TILE_SIZE - texture_x - 1;
-	else if (ray->side == 1 && ray->dir_y < 0)
-        texture_x = TILE_SIZE - texture_x - 1;
-     texture_x = TILE_SIZE - texture_x - 1;
+		// x coordinate on the texture
+		int texture_x = (int)(wallX * (double)TILE_SIZE);
+		if (ray->side == 0 && ray->dir_x > 0)
+			texture_x = TILE_SIZE - texture_x - 1;
+		else if (ray->side == 1 && ray->dir_y < 0)
+			texture_x = TILE_SIZE - texture_x - 1;
+		texture_x = TILE_SIZE - texture_x - 1;
 
  		int texture_y = (y - top_pixel) * TILE_SIZE / strip_height;
 
-int color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + texture_x * (mlx->texture[texture_num].bpp / 8)));
+		color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + texture_x * (mlx->texture[texture_num].bpp / 8)));
 
 
 
 
  			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, color);
-
 		}
 		y++;
 	}
