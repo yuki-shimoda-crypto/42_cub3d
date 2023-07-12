@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/11 23:23:18 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/12 12:07:13 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -354,10 +354,20 @@
 
 #define MOVE_SPEED		0.1
 
+typedef struct s_img	t_img;
 typedef struct s_map	t_map;
 typedef struct s_player	t_player;
 typedef struct s_ray	t_ray;
 typedef struct s_mlx	t_mlx;
+
+struct s_img
+{
+	void	*img;
+	char	*data;
+	int		bpp;
+	int		size_l;
+	int		endian;
+};
 
 struct s_map
 {
@@ -395,7 +405,9 @@ struct s_mlx
 	t_map		map;
 	t_player	player;
 	t_ray		ray;
+	t_img		texture[4];
 };
+
 
 void	draw_cell(t_mlx *mlx, t_map *map, size_t cell_x, size_t cell_y)
 {
@@ -508,6 +520,22 @@ void cast_ray(t_map *map, t_player *player, t_ray *ray)
     ray->distance = perpWallDist;
 }
 
+
+void	load_textures(t_mlx *mlx)
+{
+	int i;
+	int	x;
+	int	y;
+
+	char *texture_files[4] = {"texture/north_texture.xpm", "texture/south_texture.xpm", "texture/east_texture.xpm", "texture/west_texture.xpm"};
+	for (i = 0; i < 4; i++)
+	{
+		mlx->texture[i].img = mlx_xpm_file_to_image(mlx->mlx_ptr, texture_files[i], &x, &y);
+		if (mlx->texture[i].img == NULL)
+			exit(1);
+		mlx->texture[i].data = mlx_get_data_addr(mlx->texture[i].img, &mlx->texture[i].bpp, &mlx->texture[i].size_l, &mlx->texture[i].endian);
+	}
+}
 void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 {
 	size_t	y;
@@ -531,6 +559,18 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 		top_pixel = 0;
 	if (bottom_pixel > WINDOW_HEIGHT)
 		bottom_pixel = WINDOW_HEIGHT;
+
+	int texture_num;
+
+	if (ray->side && ray->dir_y < 0)
+		texture_num = 0;
+	else if (ray->side && ray->dir_y >= 0)
+		texture_num = 1;
+	else if (!ray->side && ray->dir_x > 0)
+		texture_num = 2;
+	else
+		texture_num = 3;
+
 	y = 0;
 	while (y < WINDOW_HEIGHT)
 	{
@@ -544,14 +584,62 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 		}
 		else
 		{
-			if (ray->side && ray->dir_y < 0)
-				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, (COLOR_NORTH));
-			else if (ray->side && ray->dir_y >= 0)
-				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, (COLOR_SOUTH));
-			else if (!ray->side && ray->dir_x > 0)
-				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, COLOR_EAST);
-			else
-				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, (COLOR_WEST));
+//  			int texture_y = (y - top_pixel) * TILE_SIZE / strip_height;
+//  			int color = *(int*)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l));
+//  			int bytes_per_pixel = mlx->texture[texture_num].bpp / 8; // calculate bytes per pixel
+//  			color = *(int*)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l * bytes_per_pixel));
+//  			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, color);
+//  			int x, y;
+
+// int texX;
+// if (ray->side == 0) // Y-side
+//     texX = (int)(player->y + ray->distance * ray->dir_y) % TILE_SIZE;
+// else // X-side
+//     texX = (int)(player->x + ray->distance * ray->dir_x) % TILE_SIZE;
+// 
+//
+
+  double wallX; // the exact position where the wall was hit
+    if (ray->side == 0) // If its a y-axis wall
+        wallX = player->y + ray->distance * ray->dir_y;
+    else // if its an x-axis wall
+        wallX = player->x + ray->distance * ray->dir_x;
+    wallX -= floor(wallX); // only keep the fractional part
+
+    // x coordinate on the texture
+    int texture_x = (int)(wallX * (double)TILE_SIZE);
+    if (ray->side == 0 && ray->dir_x > 0)
+        texture_x = TILE_SIZE - texture_x - 1;
+    if (ray->side == 1 && ray->dir_y < 0)
+        texture_x = TILE_SIZE - texture_x - 1;
+     texture_x = TILE_SIZE - texture_x - 1;
+
+
+
+
+ 		int texture_y = (y - top_pixel) * TILE_SIZE / strip_height;
+
+int color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + texture_x * (mlx->texture[texture_num].bpp / 8)));
+
+//int color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + texX * (mlx->texture[texture_num].bpp / 8)));
+
+//color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + x * TILE_SIZE/ (size_t)strip_height * (mlx->texture[texture_num].bpp / 8)));
+//color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + x * (mlx->texture[texture_num].bpp / 8) % (size_t)strip_height));
+
+
+//  			int texture_y = (y - top_pixel) * TILE_SIZE / strip_height;
+//  			int color = *(int*)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l));
+ 			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, color);
+
+// 			if (ray->side && ray->dir_y < 0)
+// //				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, (COLOR_NORTH));
+// 				mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->texture_north, x, y);
+// 			else if (ray->side && ray->dir_y >= 0)
+// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, (COLOR_SOUTH));
+// 			else if (!ray->side && ray->dir_x > 0)
+// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, COLOR_EAST);
+// 			else
+// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, (COLOR_WEST));
 		}
 		y++;
 	}
@@ -639,6 +727,7 @@ void	init_mlx(t_mlx *mlx)
 	mlx->win_ptr = mlx_new_window(mlx->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "mlx");
 	init_player(&mlx->player);
 	init_map(&mlx->map, &mlx->player);
+	load_textures(mlx);
 	printf_map(mlx->map.grid);
 //	init_ray(mlx);
 }
