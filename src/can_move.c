@@ -50,7 +50,7 @@ bool	can_move_left(t_map_node *map, size_t x, size_t y)
 		exit_error("The map must be walled off.\n", false);
 	if (map->size < x + 1)
 		exit_error("The map must be walled off.\n", false);
-	if (x == 1)
+	if (x == 0)
 		exit_error("The map must be walled off.\n", false);
 	if (map->line[x - 1] == ' ' || map->line[x - 1] == '\0')
 		exit_error("The map must be walled off.\n", false);

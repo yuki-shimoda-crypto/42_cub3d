@@ -43,17 +43,17 @@ static void	determine_texture_number(t_ray *ray, t_draw *draw)
 
 static void	draw_wall(t_mlx *mlx, size_t x, size_t y, t_draw *draw)
 {
-	double	wallX;
+	double	wall_x;
 	int		texture_y;
 	int		color;
 	int		texture_x;
 
 	if (mlx->ray.side == 0)
-		wallX = mlx->player.y + mlx->ray.distance * mlx->ray.dir_y;
+		wall_x = mlx->player.y + mlx->ray.distance * mlx->ray.dir_y;
 	else
-		wallX = mlx->player.x + mlx->ray.distance * mlx->ray.dir_x;
-	wallX -= floor(wallX);
-	texture_x = (int)(wallX * (double)TILE_SIZE);
+		wall_x = mlx->player.x + mlx->ray.distance * mlx->ray.dir_x;
+	wall_x -= floor(wall_x);
+	texture_x = (int)(wall_x * (double)TILE_SIZE);
 	if (mlx->ray.side == 0 && mlx->ray.dir_x > 0)
 		texture_x = TILE_SIZE - texture_x - 1;
 	if (mlx->ray.side == 1 && mlx->ray.dir_y < 0)
