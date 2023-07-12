@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/12 15:38:24 by enogaWa          ###   ########.fr       */
+/*   Updated: 2023/07/12 16:51:06 by enogaWa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,5 +278,12 @@ struct s_mlx
 	t_img		texture[4];
 };
 
+typedef struct s_calculations
+{
+	int mapX;
+	int mapY;
+	double sideDistX;
+	double sideDistY;
+} t_calculations;
 
 #endif

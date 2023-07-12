@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/12 16:34:48 by enogaWa          ###   ########.fr       */
+/*   Updated: 2023/07/12 16:52:47 by enogaWa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,71 +136,149 @@ void	draw_minimap(t_mlx *mlx, t_map *map)
 	}
 }
 
-void	cast_ray(t_map *map, t_player *player, t_ray *ray)
+// void	cast_ray(t_map *map, t_player *player, t_ray *ray)
+// {
+// 	int	mapX;
+// 	int	mapY;
+// 	double sideDistX;
+// 	double sideDistY;
+// 	double deltaDistX;
+// 	double deltaDistY;
+// 	double perpWallDist;
+
+// 	mapX = (int)player->x;
+// 	mapY = (int)player->y;
+// 	ray->dir_x = cos(ray->angle);
+// 	ray->dir_y = sin(ray->angle);
+// 	deltaDistX = fabs(1 / ray->dir_x);
+// 	deltaDistY = fabs(1 / ray->dir_y);
+
+// 	ray->hit_wall = false;
+
+// 	if (ray->dir_x < 0)
+// 	{
+// 		ray->step_x = -1;
+// 		sideDistX = (player->x - mapX) * deltaDistX;
+// 	}
+// 	else
+// 	{
+// 		ray->step_x = 1;
+// 		sideDistX = (mapX + 1.0 - player->x) * deltaDistX;
+// 	}
+// 	if (ray->dir_y < 0)
+// 	{
+// 		ray->step_y = -1;
+// 		sideDistY = (player->y - mapY) * deltaDistY;
+// 	}
+// 	else
+// 	{
+// 		ray->step_y = 1;
+// 		sideDistY = (mapY + 1.0 - player->y) * deltaDistY;
+// 	}
+// 	while (ray->hit_wall == false)
+// 	{
+// 		if (sideDistX < sideDistY)
+// 		{
+// 			sideDistX += deltaDistX;
+// 			mapX += ray->step_x;
+// 			ray->side = 0;
+// 		}
+// 		else
+// 		{
+// 			sideDistY += deltaDistY;
+// 			mapY += ray->step_y;
+// 			ray->side = 1;
+// 		}
+// 		if (map->grid[mapY][mapX] == WALL)
+// 			ray->hit_wall = true;
+// 	}
+
+// 		if (ray->side == 0)
+// 	 	perpWallDist = (mapX - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
+// 		else
+// 	 	perpWallDist = (mapY - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
+
+// 	ray->distance = perpWallDist;
+// }
+
+void calculate_distance(t_calculations *calc, t_player *player, t_ray *ray)
 {
-	int	mapX;
-	int	mapY;
-	double sideDistX;
-	double sideDistY;
-	double deltaDistX;
-	double deltaDistY;
 	double perpWallDist;
 
-	mapX = (int)player->x;
-	mapY = (int)player->y;
-	ray->dir_x = cos(ray->angle);
-	ray->dir_y = sin(ray->angle);
-	deltaDistX = fabs(1 / ray->dir_x);
-	deltaDistY = fabs(1 / ray->dir_y);
-
-	ray->hit_wall = false;
-
-	if (ray->dir_x < 0)
-	{
-		ray->step_x = -1;
-		sideDistX = (player->x - mapX) * deltaDistX;
-	}
+	if (ray->side == 0)
+	 	perpWallDist = (calc->mapX - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
 	else
-	{
-		ray->step_x = 1;
-		sideDistX = (mapX + 1.0 - player->x) * deltaDistX;
-	}
-	if (ray->dir_y < 0)
-	{
-		ray->step_y = -1;
-		sideDistY = (player->y - mapY) * deltaDistY;
-	}
-	else
-	{
-		ray->step_y = 1;
-		sideDistY = (mapY + 1.0 - player->y) * deltaDistY;
-	}
-	while (ray->hit_wall == false)
-	{
-		if (sideDistX < sideDistY)
-		{
-			sideDistX += deltaDistX;
-			mapX += ray->step_x;
-			ray->side = 0;
-		}
-		else
-		{
-			sideDistY += deltaDistY;
-			mapY += ray->step_y;
-			ray->side = 1;
-		}
-		if (map->grid[mapY][mapX] == WALL)
-			ray->hit_wall = true;
-	}
-
-		if (ray->side == 0)
-	 	perpWallDist = (mapX - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
-		else
-	 	perpWallDist = (mapY - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
+	 	perpWallDist = (calc->mapY - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
 
 	ray->distance = perpWallDist;
 }
 
+void find_wall(t_calculations *calc, t_map *map, t_ray *ray, double deltaDistX, double deltaDistY)
+{
+	while (ray->hit_wall == false)
+	{
+		if (calc->sideDistX < calc->sideDistY)
+		{
+			calc->sideDistX += deltaDistX;
+			calc->mapX += ray->step_x;
+			ray->side = 0;
+		}
+		else
+		{
+			calc->sideDistY += deltaDistY;
+			calc->mapY += ray->step_y;
+			ray->side = 1;
+		}
+		if (map->grid[calc->mapY][calc->mapX] == WALL)
+			ray->hit_wall = true;
+	}
+}
+
+void set_ray_direction(t_calculations *calc, t_player *player, t_ray *ray, double deltaDistX, double deltaDistY)
+{
+	if (ray->dir_x < 0)
+	{
+		ray->step_x = -1;
+		calc->sideDistX = (player->x - calc->mapX) * deltaDistX;
+	}
+	else
+	{
+		ray->step_x = 1;
+		calc->sideDistX = (calc->mapX + 1.0 - player->x) * deltaDistX;
+	}
+	if (ray->dir_y < 0)
+	{
+		ray->step_y = -1;
+		calc->sideDistY = (player->y - calc->mapY) * deltaDistY;
+	}
+	else
+	{
+		ray->step_y = 1;
+		calc->sideDistY = (calc->mapY + 1.0 - player->y) * deltaDistY;
+	}
+}
+
+void init_ray(t_calculations *calc, t_player *player, t_ray *ray)
+{
+	calc->mapX = (int)player->x;
+	calc->mapY = (int)player->y;
+	ray->dir_x = cos(ray->angle);
+	ray->dir_y = sin(ray->angle);
+}
+
+void cast_ray(t_map *map, t_player *player, t_ray *ray)
+{
+	t_calculations calc;
+	double deltaDistX;
+	double deltaDistY;
+
+	init_ray(&calc, player, ray);
+	deltaDistX = fabs(1 / ray->dir_x);
+	deltaDistY = fabs(1 / ray->dir_y);
+	set_ray_direction(&calc, player, ray, deltaDistX, deltaDistY);
+	find_wall(&calc, map, ray, deltaDistX, deltaDistY);
+	calculate_distance(&calc, player, ray);
+}//
 
 void	load_textures(t_mlx *mlx)
 {
