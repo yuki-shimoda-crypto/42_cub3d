@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/13 00:24:52 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/13 01:21:18 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,7 @@ struct s_mlx
 	t_player	player;
 	t_ray		ray;
 	t_img		texture[4];
+	t_game_data	*data;
 };
 
 
@@ -160,6 +161,8 @@ struct	s_game_data
 	char			*e_texture;
 	long			f_color[3];
 	long			c_color[3];
+	size_t			color_floor;
+	size_t			color_ceiling;
 };
 
 // save the map node after checking

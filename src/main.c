@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/13 00:30:52 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/13 01:21:42 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void cast_ray(t_map *map, t_player *player, t_ray *ray)
         ray->step_x = 1;
         sideDistX = (mapX + 1.0 - player->x) * deltaDistX;
     }
+
     if (ray->dir_y < 0)
 	{
         ray->step_y = -1;
@@ -101,6 +102,7 @@ void cast_ray(t_map *map, t_player *player, t_ray *ray)
         ray->step_y = 1;
         sideDistY = (mapY + 1.0 - player->y) * deltaDistY;
     }
+
     while (ray->hit_wall == false)
 	{
         if (sideDistX < sideDistY)
@@ -123,7 +125,6 @@ void cast_ray(t_map *map, t_player *player, t_ray *ray)
 	 	perpWallDist = (mapX - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
      else
 	 	perpWallDist = (mapY - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
-
     ray->distance = perpWallDist;
 }
 
@@ -150,7 +151,14 @@ void	load_textures(t_mlx *mlx, t_game_data *data)
 	}
 }
 
-void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
+
+void	make_color(t_game_data *data, long *f_color, long *c_color)
+{
+	data->color_floor = f_color[0] * (16 * 16 * 16 * 16) + f_color[1] * (16 * 16) + f_color[2];
+	data->color_ceiling = c_color[0] * (16 * 16 * 16 * 16) + f_color[1] * (16 * 16) + f_color[2];
+}
+
+void	draw_wall_strip(t_mlx *mlx, t_ray *ray, size_t x, t_game_data *data)
 {
 	size_t	y;
 	double	corrected_distance;
@@ -158,13 +166,14 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 	double	top_pixel;
 	double	bottom_pixel;
 
-	corrected_distance = ray->distance * cos(ray->angle - player->direction);
+	corrected_distance = ray->distance * cos(ray->angle - mlx->player.direction);
 	strip_height = WINDOW_HEIGHT * 1 / (corrected_distance);
 	top_pixel = ((double)WINDOW_HEIGHT / 2.0) - (strip_height / 2.0);
 	bottom_pixel = ((double)WINDOW_HEIGHT / 2.0) + (strip_height / 2.0);
 	if (bottom_pixel > WINDOW_HEIGHT)
 		bottom_pixel = WINDOW_HEIGHT;
 
+	make_color(data, data->f_color, data->c_color);
 	int texture_num;
 
 	if (ray->side && ray->dir_y < 0)
@@ -181,11 +190,11 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 	{
 		if (y < top_pixel)
 		{
-			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, COLOR_SKY);
+			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, data->color_ceiling);
 		}
 		else if (y > bottom_pixel)
 		{
-			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, COLOR_GROUND);
+			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, data->color_floor);
 		}
 		else
 		{
@@ -193,9 +202,9 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 
   double wallX; // the exact position where the wall was hit
     if (ray->side == 0) // If its a y-axis wall
-        wallX = player->y + ray->distance * ray->dir_y;
+        wallX = mlx->player.y + ray->distance * ray->dir_y;
     else // if its an x-axis wall
-        wallX = player->x + ray->distance * ray->dir_x;
+        wallX = mlx->player.x + ray->distance * ray->dir_x;
     wallX -= floor(wallX); // only keep the fractional part
 
     // x coordinate on the texture
@@ -233,7 +242,7 @@ void	ray_casting(t_mlx *mlx)
 		else if (mlx->ray.angle > 2 * M_PI)
 			mlx->ray.angle -= 2 * M_PI;
 		cast_ray(&mlx->map, &mlx->player, &mlx->ray);
-		draw_wall_strip(mlx, &mlx->player, &mlx->ray, x);
+		draw_wall_strip(mlx, &mlx->ray, x, mlx->data);
 		x++;
 	}
 }
@@ -327,6 +336,7 @@ void	init_mlx(t_mlx *mlx, t_game_data *data)
 	init_map(&mlx->map, data->map_node);
 	init_player(mlx->map.grid, &mlx->player);
 	load_textures(mlx, data);
+	mlx->data = data;
 }
 
 int	destroy_mlx(t_mlx *mlx)
