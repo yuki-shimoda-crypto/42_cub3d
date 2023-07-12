@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/12 18:58:12 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/12 19:21:16 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-
-
 
 void	draw_cell(t_mlx *mlx, t_map *map, size_t cell_x, size_t cell_y)
 {
@@ -212,7 +210,7 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
     int texture_x = (int)(wallX * (double)TILE_SIZE);
     if (ray->side == 0 && ray->dir_x > 0)
         texture_x = TILE_SIZE - texture_x - 1;
-	if (ray->side == 1 && ray->dir_y < 0)
+	else if (ray->side == 1 && ray->dir_y < 0)
         texture_x = TILE_SIZE - texture_x - 1;
      texture_x = TILE_SIZE - texture_x - 1;
 
@@ -286,7 +284,6 @@ bool	is_start(t_player *player, char c, size_t x, size_t y)
 	return (true);
 }
 
-#include <unistd.h>
 void	init_player(t_map *map, t_player *player)
 {
 	size_t	x;
