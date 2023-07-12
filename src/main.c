@@ -6,8 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/13 03:27:21 by yshimoda         ###   ########.fr       */
-/*                                                                            */
+/*   Updated: 2023/07/13 03:39:52 by yshimoda         ###   ########.fr       */
 /* ************************************************************************** */
 
 #include "cub3d.h"
@@ -22,47 +21,49 @@ static void init_ray(t_player *player, t_ray *ray)
     ray->map_y = (int)player->y;
     ray->dir_x = cos(ray->angle);
     ray->dir_y = sin(ray->angle);
+    ray->delta_dist_x = fabs(1 / ray->dir_x);
+    ray->delta_dist_y = fabs(1 / ray->dir_y);
 	ray->hit_wall = false;
 }
 
-static void calculate_step_and_sidedist(t_player *player, t_ray *ray, double *sideDistX, double *sideDistY, double deltaDistX, double deltaDistY)
+static void calculate_step_and_sidedist(t_player *player, t_ray *ray)
 {
     if (ray->dir_x < 0)
     {
         ray->step_x = -1;
-        *sideDistX = (player->x - ray->map_x) * deltaDistX;
+        ray->side_dist_x = (player->x - ray->map_x) * ray->delta_dist_x;
     }
     else
     {
         ray->step_x = 1;
-        *sideDistX = (ray->map_x + 1.0 - player->x) * deltaDistX;
+        ray->side_dist_x = (ray->map_x + 1.0 - player->x) * ray->delta_dist_x;
     }
 
     if (ray->dir_y < 0)
     {
         ray->step_y = -1;
-        *sideDistY = (player->y - ray->map_y) * deltaDistY;
+        ray->side_dist_y = (player->y - ray->map_y) * ray->delta_dist_y;
     }
     else
     {
         ray->step_y = 1;
-        *sideDistY = (ray->map_y + 1.0 - player->y) * deltaDistY;
+        ray->side_dist_y = (ray->map_y + 1.0 - player->y) * ray->delta_dist_y;
     }
 }
 
-static void find_wall_hit(t_map *map, t_ray *ray, double *sideDistX, double *sideDistY, double deltaDistX, double deltaDistY)
+static void find_wall_hit(t_map *map, t_ray *ray)
 {
     while (ray->hit_wall == false)
     {
-        if (*sideDistX < *sideDistY)
+        if (ray->side_dist_x < ray->side_dist_y)
         {
-            *sideDistX += deltaDistX;
+            ray->side_dist_x += ray->delta_dist_x;
             ray->map_x += ray->step_x;
             ray->side = 0;
         }
         else
         {
-            *sideDistY += deltaDistY;
+            ray->side_dist_y += ray->delta_dist_y;
             ray->map_y += ray->step_y;
             ray->side = 1;
         }
@@ -81,14 +82,10 @@ static void calculate_wall_dist(t_player *player, t_ray *ray)
 
 void cast_ray(t_map *map, t_player *player, t_ray *ray)
 {
-    double sideDistX;
-    double sideDistY;
-    double deltaDistX = fabs(1 / ray->dir_x);
-    double deltaDistY = fabs(1 / ray->dir_y);
 
     init_ray(player, ray);
-    calculate_step_and_sidedist(player, ray, &sideDistX, &sideDistY, deltaDistX, deltaDistY);
-    find_wall_hit(map, ray, &sideDistX, &sideDistY, deltaDistX, deltaDistY);
+    calculate_step_and_sidedist(player, ray);
+    find_wall_hit(map, ray);
     calculate_wall_dist(player, ray);
 }
 
@@ -348,7 +345,6 @@ static void handle_move_key(int key_num, t_mlx *mlx)
 		new_x = mlx->player.x - MOVE_SPEED * sin(mlx->player.direction);
 		new_y = mlx->player.y + MOVE_SPEED * cos(mlx->player.direction);
 	}
-
 	if (mlx->map.grid[(int)new_y][(int)new_x] != WALL)
 		change_move_value(&mlx->map, &mlx->player, new_x, new_y);
 }
