@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/12 15:38:33 by enogaWa          ###   ########.fr       */
+/*   Updated: 2023/07/12 16:34:48 by enogaWa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,33 +46,73 @@
 // 	free_data(&data);
 // 	return (0);
 // }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+// void	draw_cell(t_mlx *mlx, t_map *map, size_t cell_x, size_t cell_y)
+// {
+// 	size_t	pixel_x;
+// 	size_t	pixel_y;
+// 	size_t	pixel_x_end;
+// 	size_t	pixel_y_end;
+// 	size_t	pixel_x_start;
+
+// 	pixel_x = cell_x * MINIMAP_TILE + (WINDOW_WIDTH - MINIMAP_WIDTH);
+// 	pixel_y = cell_y * MINIMAP_TILE + (WINDOW_HEIGHT - MINIMAP_HEIGHT);
+// 	pixel_x_end = pixel_x + MINIMAP_TILE;
+// 	pixel_y_end = pixel_y + MINIMAP_TILE;
+// 	pixel_x_start = pixel_x;
+// 	while (pixel_y < pixel_y_end)
+// 	{
+// 		pixel_x = pixel_x_start;
+// 		while (pixel_x < pixel_x_end)
+// 		{
+// 			if (map->grid[cell_y][cell_x] == WALL)
+// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr,
+// 					pixel_x, pixel_y, COLOR_WALL);
+// 			else if (map->grid[cell_y][cell_x] == SPACE)
+// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr,
+// 					pixel_x, pixel_y, COLOR_SPACE);
+// 			else if (map->grid[cell_y][cell_x] == PLAYER)
+// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr,
+// 					pixel_x, pixel_y, COLOR_PLAYER);
+// 			pixel_x++;
+// 		}
+// 		pixel_y++;
+// 	}
+// }
+
+void update_pixels(size_t *pixel_x, size_t *pixel_y, size_t cell_x, size_t cell_y)
+{
+	*pixel_x = cell_x * MINIMAP_TILE + (WINDOW_WIDTH - MINIMAP_WIDTH);
+	*pixel_y = cell_y * MINIMAP_TILE + (WINDOW_HEIGHT - MINIMAP_HEIGHT);
+}
+
+void set_pixel_color(t_mlx *mlx, size_t pixel_x, size_t pixel_y, char cell_type)
+{
+	if (cell_type == WALL)
+		mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_WALL);
+	else if (cell_type == SPACE)
+		mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_SPACE);
+	else if (cell_type == PLAYER)
+		mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_PLAYER);
+}
 
 void	draw_cell(t_mlx *mlx, t_map *map, size_t cell_x, size_t cell_y)
 {
 	size_t	pixel_x;
 	size_t	pixel_y;
-	size_t	pixel_x_end;
-	size_t	pixel_y_end;
-	size_t	pixel_x_start;
 
-	pixel_x = cell_x * MINIMAP_TILE + (WINDOW_WIDTH - MINIMAP_WIDTH);
-	pixel_y = cell_y * MINIMAP_TILE + (WINDOW_HEIGHT - MINIMAP_HEIGHT);
-	pixel_x_end = pixel_x + MINIMAP_TILE;
-	pixel_y_end = pixel_y + MINIMAP_TILE;
-	pixel_x_start = pixel_x;
-	while (pixel_y < pixel_y_end)
+	update_pixels(&pixel_x, &pixel_y, cell_x, cell_y);
+	char cell_type = map->grid[cell_y][cell_x];
+
+	while (pixel_y < pixel_y + MINIMAP_TILE)
 	{
-		pixel_x = pixel_x_start;
-		while (pixel_x < pixel_x_end)
+		size_t temp_pixel_x = pixel_x;
+		while (temp_pixel_x < pixel_x + MINIMAP_TILE)
 		{
-			if (map->grid[cell_y][cell_x] == WALL)
-				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_WALL);
-			else if (map->grid[cell_y][cell_x] == SPACE)
-				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_SPACE);
-			else if (map->grid[cell_y][cell_x] == PLAYER)
-				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, pixel_x, pixel_y, COLOR_PLAYER);
-			pixel_x++;
+			set_pixel_color(mlx, temp_pixel_x, pixel_y, cell_type);
+			temp_pixel_x++;
 		}
 		pixel_y++;
 	}
@@ -96,67 +136,69 @@ void	draw_minimap(t_mlx *mlx, t_map *map)
 	}
 }
 
-void cast_ray(t_map *map, t_player *player, t_ray *ray)
+void	cast_ray(t_map *map, t_player *player, t_ray *ray)
 {
-    int mapX = (int)player->x;
-    int mapY = (int)player->y;
+	int	mapX;
+	int	mapY;
+	double sideDistX;
+	double sideDistY;
+	double deltaDistX;
+	double deltaDistY;
+	double perpWallDist;
 
-    ray->dir_x = cos(ray->angle);
-    ray->dir_y = sin(ray->angle);
+	mapX = (int)player->x;
+	mapY = (int)player->y;
+	ray->dir_x = cos(ray->angle);
+	ray->dir_y = sin(ray->angle);
+	deltaDistX = fabs(1 / ray->dir_x);
+	deltaDistY = fabs(1 / ray->dir_y);
 
-    double sideDistX;
-    double sideDistY;
+	ray->hit_wall = false;
 
-    double deltaDistX = fabs(1 / ray->dir_x);
-    double deltaDistY = fabs(1 / ray->dir_y);
-    double perpWallDist;
-
-    ray->hit_wall = false;
-
-    if (ray->dir_x < 0)
+	if (ray->dir_x < 0)
 	{
-        ray->step_x = -1;
-        sideDistX = (player->x - mapX) * deltaDistX;
-    }
+		ray->step_x = -1;
+		sideDistX = (player->x - mapX) * deltaDistX;
+	}
 	else
 	{
-        ray->step_x = 1;
-        sideDistX = (mapX + 1.0 - player->x) * deltaDistX;
-    }
-    if (ray->dir_y < 0)
+		ray->step_x = 1;
+		sideDistX = (mapX + 1.0 - player->x) * deltaDistX;
+	}
+	if (ray->dir_y < 0)
 	{
-        ray->step_y = -1;
-        sideDistY = (player->y - mapY) * deltaDistY;
-    }
+		ray->step_y = -1;
+		sideDistY = (player->y - mapY) * deltaDistY;
+	}
 	else
 	{
-        ray->step_y = 1;
-        sideDistY = (mapY + 1.0 - player->y) * deltaDistY;
-    }
-    while (ray->hit_wall == false)
+		ray->step_y = 1;
+		sideDistY = (mapY + 1.0 - player->y) * deltaDistY;
+	}
+	while (ray->hit_wall == false)
 	{
-        if (sideDistX < sideDistY)
+		if (sideDistX < sideDistY)
 		{
-            sideDistX += deltaDistX;
-            mapX += ray->step_x;
-            ray->side = 0;
-        }
+			sideDistX += deltaDistX;
+			mapX += ray->step_x;
+			ray->side = 0;
+		}
 		else
 		{
-            sideDistY += deltaDistY;
-            mapY += ray->step_y;
-            ray->side = 1;
-        }
-        if (map->grid[mapY][mapX] == WALL)
+			sideDistY += deltaDistY;
+			mapY += ray->step_y;
+			ray->side = 1;
+		}
+		if (map->grid[mapY][mapX] == WALL)
 			ray->hit_wall = true;
-    }
+	}
 
-     if (ray->side == 0)
+		if (ray->side == 0)
 	 	perpWallDist = (mapX - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
-     else
+		else
 	 	perpWallDist = (mapY - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
 
-    ray->distance = perpWallDist;
+	ray->distance = perpWallDist;
 }
 
 
@@ -216,29 +258,13 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 		}
 		else
 		{
-//  			int texture_y = (y - top_pixel) * TILE_SIZE / strip_height;
-//  			int color = *(int*)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l));
-//  			int bytes_per_pixel = mlx->texture[texture_num].bpp / 8; // calculate bytes per pixel
-//  			color = *(int*)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l * bytes_per_pixel));
-//  			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, color);
-//  			int x, y;
 
-// int texX;
-// if (ray->side == 0) // Y-side
-//     texX = (int)(player->y + ray->distance * ray->dir_y) % TILE_SIZE;
-// else // X-side
-//     texX = (int)(player->x + ray->distance * ray->dir_x) % TILE_SIZE;
-// 
-//
-
-  double wallX; // the exact position where the wall was hit
-    if (ray->side == 0) // If its a y-axis wall
+  double wallX;
+    if (ray->side == 0)
         wallX = player->y + ray->distance * ray->dir_y;
-    else // if its an x-axis wall
+    else
         wallX = player->x + ray->distance * ray->dir_x;
-    wallX -= floor(wallX); // only keep the fractional part
-
-    // x coordinate on the texture
+    wallX -= floor(wallX);
     int texture_x = (int)(wallX * (double)TILE_SIZE);
     if (ray->side == 0 && ray->dir_x > 0)
         texture_x = TILE_SIZE - texture_x - 1;
@@ -250,25 +276,7 @@ void	draw_wall_strip(t_mlx *mlx, t_player *player, t_ray *ray, size_t x)
 
 int color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + texture_x * (mlx->texture[texture_num].bpp / 8)));
 
-//int color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + texX * (mlx->texture[texture_num].bpp / 8)));
-
-//color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + x * TILE_SIZE/ (size_t)strip_height * (mlx->texture[texture_num].bpp / 8)));
-//color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + x * (mlx->texture[texture_num].bpp / 8) % (size_t)strip_height));
-
-
-//  			int texture_y = (y - top_pixel) * TILE_SIZE / strip_height;
-//  			int color = *(int*)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l));
  			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, color);
-
-// 			if (ray->side && ray->dir_y < 0)
-// //				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, (COLOR_NORTH));
-// 				mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->texture_north, x, y);
-// 			else if (ray->side && ray->dir_y >= 0)
-// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, (COLOR_SOUTH));
-// 			else if (!ray->side && ray->dir_x > 0)
-// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, COLOR_EAST);
-// 			else
-// 				mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, (COLOR_WEST));
 		}
 		y++;
 	}
