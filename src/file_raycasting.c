@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 22:55:17 by enogaWa           #+#    #+#             */
-/*   Updated: 2023/07/12 23:01:33 by enogaWa          ###   ########.fr       */
+/*   Updated: 2023/07/12 23:29:53 by enogaWa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ static void	init_ray(t_player *player, t_ray *ray, t_helper *helper)
 	helper->deltaDistY = fabs(1 / ray->dir_y);
 }
 
-static void	calculate_step_side_dist(t_player *player, t_ray *ray, t_helper *helper)
+static void	calculate_step_side_dist(t_player *player,
+	t_ray *ray, t_helper *helper)
 {
 	if (ray->dir_x < 0)
 	{
@@ -73,7 +74,8 @@ static void	perform_dda(t_map *map, t_ray *ray, t_helper *helper)
 	}
 }
 
-static void	calculate_wall_distance(t_player *player, t_ray *ray, t_helper *helper)
+static void	calculate_wall_distance(t_player *player,
+	t_ray *ray, t_helper *helper)
 {
 	double	perpWallDist;
 
