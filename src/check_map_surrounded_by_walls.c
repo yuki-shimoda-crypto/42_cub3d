@@ -6,7 +6,7 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 22:43:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/06/15 16:12:40 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/12 22:14:11 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,26 +68,39 @@ static void	check_surrounded_by_walls(t_map_node *map)
 	}
 }
 
-static t_map_node	*duplicate_map(t_map_node *map)
+static char	**duplicate_map(t_map_node *map)
 {
-	t_map_node	*dup_map;
-	t_map_node	*new_map;
+	t_map_node	*head;
+	size_t		height;
+	size_t		y;
+	char		**dup_map;
 
-	dup_map = NULL;
+	head = map;
+	height = 0;
 	while (map)
 	{
-		new_map = map_node_new(map->line);
-		map_node_addback(&dup_map, new_map);
+		height += 1;
 		map = map->next;
+	}
+	dup_map = calloc(sizeof(char *), height + 1);
+	map = head;
+	y = 0;
+	while (y < height)
+	{
+		dup_map[y] = strdup(map->line);
+		if (!dup_map[y])
+			exit_error(NULL, true);
+		map = map->next;
+		y++;
 	}
 	return (dup_map);
 }
 
 void	check_map_surrounded_by_walls(t_map_node *map)
 {
-	t_map_node	*dup_map;
+	char		**dup_map;
 
-	dup_map = duplicate_map(map);
+	grid = duplicate_map(map);
 	check_surrounded_by_walls(dup_map);
 	free_map(dup_map);
 }
