@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/12 15:38:33 by enogaWa          ###   ########.fr       */
+/*   Updated: 2023/07/12 18:58:12 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,36 +16,6 @@
 #include <stdio.h>
 #include <math.h>
 
-// static void	init_game_data(t_game_data *data)
-// {
-// 	data->map_node = NULL;
-// 	data->player_pos = NULL;
-// 	data->orientation = '\0';
-// 	data->n_texture = NULL;
-// 	data->s_texture = NULL;
-// 	data->w_texture = NULL;
-// 	data->e_texture = NULL;
-// 	data->f_color[0] = 0;
-// 	data->f_color[1] = 0;
-// 	data->f_color[2] = 0;
-// 	data->c_color[0] = 0;
-// 	data->c_color[1] = 0;
-// 	data->c_color[2] = 0;
-// }
-// 
-// int	main(int argc, const char *argv[])
-// {
-// 	t_cub_file_node		*cub_file_node;
-// 	t_game_data			data;
-// 
-// 	init_game_data(&data);
-// 	check_file_name(argc, argv);
-// 	cub_file_node = read_cub_file(argv[1]);
-// 	check_cub_file(cub_file_node, &data);
-// 	free_cub_file_node(cub_file_node);
-// 	free_data(&data);
-// 	return (0);
-// }
 
 
 void	draw_cell(t_mlx *mlx, t_map *map, size_t cell_x, size_t cell_y)
@@ -294,70 +264,93 @@ void	ray_casting(t_mlx *mlx)
 
 int	draw(void *mlx)
 {
-	draw_minimap(mlx, &((t_mlx *)mlx)->map);
+//	draw_minimap(mlx, &((t_mlx *)mlx)->map);
 	ray_casting(mlx);
 	return (0);
 }
 
-void	init_map(t_map *map, t_player *player)
+bool	is_start(t_player *player, char c, size_t x, size_t y)
+{
+	if (c != 'N' && c != 'S' && c != 'E' && c != 'W')
+		return (false);
+	if (c == 'N')
+		player->direction = NORTH;
+	else if (c == 'S')
+		player->direction = SOUTH;
+	else if (c == 'E')
+		player->direction = EAST;
+	else if (c == 'W')
+		player->direction = WEST;
+	player->x = x;
+	player->y = y;
+	return (true);
+}
+
+#include <unistd.h>
+void	init_player(t_map *map, t_player *player)
 {
 	size_t	x;
 	size_t	y;
 
-	map->grid = calloc(sizeof(char *), MAP_HEIGHT + 1);
+	player->fov = FOV;
 	y = 0;
-	while (y < MAP_HEIGHT)
-	{
-		map->grid[y] = calloc(sizeof(char), MAP_WIDTH + 1);
-		y++;
-	}
-	y = 0;
-	while (y < MAP_HEIGHT)
+	while (map->grid[y])
 	{
 		x = 0;
-		while (x < MAP_WIDTH)
+		while (map->grid[y][x])
 		{
-			if (y == 0 || x == 0 || x == MAP_HEIGHT - 1 || y == MAP_WIDTH - 1)
-				map->grid[y][x] = '1';
-			else
-				map->grid[y][x] = '0';
+			if (is_start(player, map->grid[y][x], x, y))
+				return ;
 			x++;
 		}
 		y++;
 	}
-	map->grid[3][3] = '1';
-	map->grid[(size_t)(player->y)][(size_t)(player->x)] = '2';
 }
 
-void	init_player(t_player *player)
-{
-	player->x = 4.3;
-	player->y = 4.3;
-	player->direction = NORTH;
-	player->fov = FOV;
-}
-
-void	printf_map(char **grid)
+void	printf_map(t_map *map)
 {
 	size_t	y;
 
 	y = 0;
-	while (y < MAP_HEIGHT)
+	while (y < map->height)
 	{
-		printf("%s\n", grid[y]);
+		printf("%s\n", map->grid[y]);
 		y++;
 	}
 }
 
-void	init_mlx(t_mlx *mlx)
+void	init_map(t_map *map, t_map_node *map_node)
+{
+	t_map_node	*head;
+	size_t		y;
+
+	head = map_node;
+	map->height = 0;
+	while (map_node)
+	{
+		map->height += 1;
+		map_node = map_node->next;
+	}
+	map->grid = calloc(sizeof(char *), map->height + 1);
+	map_node = head;
+	y = 0;
+	while (y < map->height)
+	{
+		map->grid[y] = strdup(map_node->line);
+		map_node = map_node->next;
+		y++;
+	}
+}
+
+void	init_mlx(t_mlx *mlx, t_game_data *data)
 {
 	mlx->mlx_ptr = mlx_init();
 	mlx->win_ptr = mlx_new_window(mlx->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "mlx");
-	init_player(&mlx->player);
-	init_map(&mlx->map, &mlx->player);
+	init_map(&mlx->map, data->map_node);
+	init_player(&mlx->map, &mlx->player);
 	load_textures(mlx);
-	printf_map(mlx->map.grid);
 //	init_ray(mlx);
+//	printf_map(&mlx->map);
 }
 
 int	destroy_mlx(t_mlx *mlx)
@@ -435,19 +428,46 @@ int	event_key_press(int key_num, t_mlx *mlx)
 		handle_move_key(key_num, mlx);
 	else if (key_num == KEY_LEFT || key_num == KEY_RIGHT)
 		handle_rotate_key(key_num, mlx);
-
 	return (0);
 }
 
-int	main(void)
+void	mlx_func(t_game_data *data)
 {
 	t_mlx	mlx;
 
-	init_mlx(&mlx);
+	init_mlx(&mlx, data);
   	mlx_loop_hook(mlx.mlx_ptr, draw, &mlx);
  	mlx_hook(mlx.win_ptr, 2, 1L << 0, event_key_press, &mlx);
  	mlx_hook(mlx.win_ptr, 17, 1L << 2, destroy_mlx, &mlx);
 	mlx_loop(mlx.mlx_ptr);
-	return (0);
 }
 
+static void	init_game_data(t_game_data *data)
+{
+	data->map_node = NULL;
+	data->n_texture = NULL;
+	data->s_texture = NULL;
+	data->w_texture = NULL;
+	data->e_texture = NULL;
+	data->f_color[0] = 0;
+	data->f_color[1] = 0;
+	data->f_color[2] = 0;
+	data->c_color[0] = 0;
+	data->c_color[1] = 0;
+	data->c_color[2] = 0;
+}
+
+int	main(int argc, const char *argv[])
+{
+	t_cub_file_node		*cub_file_node;
+	t_game_data			data;
+
+	init_game_data(&data);
+	check_file_name(argc, argv);
+	cub_file_node = read_cub_file(argv[1]);
+	check_cub_file(cub_file_node, &data);
+	mlx_func(&data);
+	free_cub_file_node(cub_file_node);
+	free_data(&data);
+	return (0);
+}
