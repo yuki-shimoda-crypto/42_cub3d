@@ -11,15 +11,13 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-//remove include to import atol
-#include <stdlib.h>
+#include "libft.h"
 
 static char	*extract_line(t_cub_file_node *node, const char *s)
 {
 	while (node)
 	{
-		if (!strncmp(node->line, s, strlen(s)))
+		if (!ft_strncmp(node->line, s, ft_strlen(s)))
 			break ;
 		node = node->next;
 	}
@@ -34,16 +32,16 @@ static void	skip_line(const char *s, size_t *i, t_skip flag)
 {
 	if (flag == SKIP_NUM)
 	{
-		while (s[*i] && (isdigit(s[*i]) || s[*i] == '-' || s[*i] == '+'))
+		while (s[*i] && (ft_isdigit(s[*i]) || s[*i] == '-' || s[*i] == '+'))
 			*i += 1;
 	}
 	else
 	{
 		while (s[*i])
 		{
-			if (isspace(s[*i]) || s[*i] == ',')
+			if (ft_isspace(s[*i]) || s[*i] == ',')
 				*i += 1;
-			else if (isdigit(s[*i]) || s[*i] == '-' || s[*i] == '+')
+			else if (ft_isdigit(s[*i]) || s[*i] == '-' || s[*i] == '+')
 				break ;
 			else
 				exit_error("Floor and Ceiling are spaces, \
@@ -63,10 +61,10 @@ static void	input_number(const char *s, t_game_data *data, t_input flag)
 	{
 		skip_line(s, &i, SKIP_SPACE_COMMA);
 		if (flag == INPUT_FLOOR)
-			data->f_color[j] = atol(&s[i]);
+			data->f_color[j] = ft_atol(&s[i]);
 		else
-			data->c_color[j] = atol(&s[i]);
-		if (!(isdigit(s[i]) || s[i] == '-' || s[i] == '+'))
+			data->c_color[j] = ft_atol(&s[i]);
+		if (!(ft_isdigit(s[i]) || s[i] == '-' || s[i] == '+'))
 			break ;
 		skip_line(s, &i, SKIP_NUM);
 		j++;

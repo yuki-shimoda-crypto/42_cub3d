@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include "libft.h"
 
 static char	*dup_texture_name(t_cub_file_node *node, const char *s)
 {
@@ -19,14 +20,14 @@ static char	*dup_texture_name(t_cub_file_node *node, const char *s)
 
 	while (node)
 	{
-		if (!strncmp(node->line, s, 2))
+		if (!ft_strncmp(node->line, s, 2))
 			break ;
 		node = node->next;
 	}
 	i = 2;
-	while (isspace(node->line[i]))
+	while (ft_isspace(node->line[i]))
 		i++;
-	texture = strdup(&node->line[i]);
+	texture = ft_strdup(&node->line[i]);
 	if (!texture)
 		exit_error("malloc error\n", false);
 	return (texture);

@@ -11,10 +11,11 @@
 /* ************************************************************************** */
 
 #include "mlx.h"
+#include "cub3d.h"
+#include "libft.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "cub3d.h"
 
 void	printf_map(t_map *map)
 {
@@ -40,14 +41,14 @@ void	init_map(t_map *map, t_map_node *map_node)
 		map->height += 1;
 		map_node = map_node->next;
 	}
-	map->grid = calloc(sizeof(char *), map->height + 1);
+	map->grid = ft_calloc(sizeof(char *), map->height + 1);
 	if (!map->grid)
 		exit_error(NULL, true);
 	map_node = head;
 	y = 0;
 	while (y < map->height)
 	{
-		map->grid[y] = strdup(map_node->line);
+		map->grid[y] = ft_strdup(map_node->line);
 		if (!map->grid[y])
 			exit_error(NULL, true);
 		map_node = map_node->next;

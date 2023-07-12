@@ -20,6 +20,8 @@ static void	init_drawing(t_ray *ray, t_mlx *mlx, t_draw *draw)
 {
 	draw->corrected_distance
 		= ray->distance * cos(ray->angle - mlx->player.direction);
+	if (draw->corrected_distance == 0)
+		draw->corrected_distance = 0.2;
 	draw->strip_height = WINDOW_HEIGHT * 1 / (draw->corrected_distance);
 	draw->top_pixel = ((double)WINDOW_HEIGHT / 2.0)
 		- (draw->strip_height / 2.0);

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include "libft.h"
 
 static t_map_node	*make_map(t_cub_file_node *node)
 {
@@ -29,17 +30,17 @@ static t_map_node	*make_map(t_cub_file_node *node)
 
 static bool	is_texture_color(const char *line)
 {
-	if (!strncmp(line, "F", 1))
+	if (!ft_strncmp(line, "F", 1))
 		return (true);
-	else if (!strncmp(line, "C", 1))
+	else if (!ft_strncmp(line, "C", 1))
 		return (true);
-	else if (!strncmp(line, "NO", 2))
+	else if (!ft_strncmp(line, "NO", 2))
 		return (true);
-	else if (!strncmp(line, "SO", 2))
+	else if (!ft_strncmp(line, "SO", 2))
 		return (true);
-	else if (!strncmp(line, "WE", 2))
+	else if (!ft_strncmp(line, "WE", 2))
 		return (true);
-	else if (!strncmp(line, "EA", 2))
+	else if (!ft_strncmp(line, "EA", 2))
 		return (true);
 	return (false);
 }

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include "libft.h"
 #include <stdlib.h>
 
 size_t	map_size(t_map_node *map)
@@ -74,7 +75,7 @@ t_map_node	*map_node_new(char *str)
 	t_map_node	*map;
 	char		*map_line;
 
-	map_line = strdup(str);
+	map_line = ft_strdup(str);
 	if (!map_line)
 		exit_error(NULL, true);
 	map = malloc(sizeof(t_map_node));
@@ -83,6 +84,6 @@ t_map_node	*map_node_new(char *str)
 	map->pre = NULL;
 	map->next = NULL;
 	map->line = map_line;
-	map->size = strlen(str);
+	map->size = ft_strlen(str);
 	return (map);
 }

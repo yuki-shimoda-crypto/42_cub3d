@@ -16,10 +16,6 @@
 # include <stdbool.h>
 # include <stddef.h>
 
-// remove
-# include <string.h>
-# include <ctype.h>
-
 # define COLOR_RESET	"\033[0m"
 # define COLOR_RED		"\033[31m"
 

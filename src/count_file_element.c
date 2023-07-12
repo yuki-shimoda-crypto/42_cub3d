@@ -11,20 +11,21 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include "libft.h"
 
 static void	count_inc(t_cub_file_count *count, const char *s)
 {
-	if (!strncmp(s, "F", 1))
+	if (!ft_strncmp(s, "F", 1))
 		count->f_color += 1;
-	else if (!strncmp(s, "C", 1))
+	else if (!ft_strncmp(s, "C", 1))
 		count->c_color += 1;
-	else if (!strncmp(s, "NO", 2))
+	else if (!ft_strncmp(s, "NO", 2))
 		count->n_texture += 1;
-	else if (!strncmp(s, "SO", 2))
+	else if (!ft_strncmp(s, "SO", 2))
 		count->s_texture += 1;
-	else if (!strncmp(s, "WE", 2))
+	else if (!ft_strncmp(s, "WE", 2))
 		count->w_texture += 1;
-	else if (!strncmp(s, "EA", 2))
+	else if (!ft_strncmp(s, "EA", 2))
 		count->e_texture += 1;
 }
 
@@ -33,7 +34,7 @@ static void	count_color(t_cub_file_node *node,
 {
 	while (node)
 	{
-		if (!strncmp(node->line, s, 1))
+		if (!ft_strncmp(node->line, s, 1))
 			count_inc(count, s);
 		node = node->next;
 	}
@@ -44,7 +45,7 @@ static void	count_texture(t_cub_file_node *node,
 {
 	while (node)
 	{
-		if (!strncmp(node->line, s, 2))
+		if (!ft_strncmp(node->line, s, 2))
 			count_inc(count, s);
 		node = node->next;
 	}

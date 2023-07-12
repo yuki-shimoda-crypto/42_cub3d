@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include "libft.h"
 
 void	check_file_name(int argc, const char *argv[])
 {
@@ -18,8 +19,8 @@ void	check_file_name(int argc, const char *argv[])
 		exit_error("The file name must be specified.\n", false);
 	else if (argc > 2)
 		exit_error("Too many argument\n", false);
-	else if (strlen(argv[1]) < 4)
+	else if (ft_strlen(argv[1]) < 4)
 		exit_error("The file name is too short to end with .cub\n", false);
-	else if (strcmp(&argv[1][strlen(argv[1]) - 4], ".cub") != 0)
+	else if (ft_strcmp(&argv[1][ft_strlen(argv[1]) - 4], ".cub") != 0)
 		exit_error("The file must end with .cub\n", false);
 }

@@ -15,16 +15,16 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-//remove to import calloc
+//remove to import ft_calloc
 #include <stdlib.h>
 
 static t_cub_file_node	*make_cub_file_node(char *line)
 {
 	t_cub_file_node	*node;
 
-	node = calloc(sizeof(t_cub_file_node), 1);
+	node = ft_calloc(sizeof(t_cub_file_node), 1);
 	if (!node)
-		exit_error("calloc error\n", false);
+		exit_error("ft_calloc error\n", false);
 	node->line = line;
 	return (node);
 }
