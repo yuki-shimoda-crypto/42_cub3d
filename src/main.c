@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/13 01:26:27 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/13 03:27:21 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,70 +16,81 @@
 #include <stdio.h>
 #include <math.h>
 
-void cast_ray(t_map *map, t_player *player, t_ray *ray)
+static void init_ray(t_player *player, t_ray *ray)
 {
-    int mapX = (int)player->x;
-    int mapY = (int)player->y;
-
+    ray->map_x = (int)player->x;
+    ray->map_y = (int)player->y;
     ray->dir_x = cos(ray->angle);
     ray->dir_y = sin(ray->angle);
+	ray->hit_wall = false;
+}
 
-    double sideDistX;
-    double sideDistY;
-
-    double deltaDistX = fabs(1 / ray->dir_x);
-    double deltaDistY = fabs(1 / ray->dir_y);
-    double perpWallDist;
-
-    ray->hit_wall = false;
-
+static void calculate_step_and_sidedist(t_player *player, t_ray *ray, double *sideDistX, double *sideDistY, double deltaDistX, double deltaDistY)
+{
     if (ray->dir_x < 0)
-	{
+    {
         ray->step_x = -1;
-        sideDistX = (player->x - mapX) * deltaDistX;
+        *sideDistX = (player->x - ray->map_x) * deltaDistX;
     }
-	else
-	{
+    else
+    {
         ray->step_x = 1;
-        sideDistX = (mapX + 1.0 - player->x) * deltaDistX;
+        *sideDistX = (ray->map_x + 1.0 - player->x) * deltaDistX;
     }
 
     if (ray->dir_y < 0)
-	{
+    {
         ray->step_y = -1;
-        sideDistY = (player->y - mapY) * deltaDistY;
+        *sideDistY = (player->y - ray->map_y) * deltaDistY;
     }
-	else
-	{
+    else
+    {
         ray->step_y = 1;
-        sideDistY = (mapY + 1.0 - player->y) * deltaDistY;
+        *sideDistY = (ray->map_y + 1.0 - player->y) * deltaDistY;
     }
-
-    while (ray->hit_wall == false)
-	{
-        if (sideDistX < sideDistY)
-		{
-            sideDistX += deltaDistX;
-            mapX += ray->step_x;
-            ray->side = 0;
-        }
-		else
-		{
-            sideDistY += deltaDistY;
-            mapY += ray->step_y;
-            ray->side = 1;
-        }
-        if (map->grid[mapY][mapX] == WALL)
-			ray->hit_wall = true;
-    }
-
-     if (ray->side == 0)
-	 	perpWallDist = (mapX - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
-     else
-	 	perpWallDist = (mapY - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
-    ray->distance = perpWallDist;
 }
 
+static void find_wall_hit(t_map *map, t_ray *ray, double *sideDistX, double *sideDistY, double deltaDistX, double deltaDistY)
+{
+    while (ray->hit_wall == false)
+    {
+        if (*sideDistX < *sideDistY)
+        {
+            *sideDistX += deltaDistX;
+            ray->map_x += ray->step_x;
+            ray->side = 0;
+        }
+        else
+        {
+            *sideDistY += deltaDistY;
+            ray->map_y += ray->step_y;
+            ray->side = 1;
+        }
+        if (map->grid[ray->map_y][ray->map_x] == WALL)
+            ray->hit_wall = true;
+    }
+}
+
+static void calculate_wall_dist(t_player *player, t_ray *ray)
+{
+    if (ray->side == 0)
+        ray->distance = (ray->map_x - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
+    else
+        ray->distance = (ray->map_y - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
+}
+
+void cast_ray(t_map *map, t_player *player, t_ray *ray)
+{
+    double sideDistX;
+    double sideDistY;
+    double deltaDistX = fabs(1 / ray->dir_x);
+    double deltaDistY = fabs(1 / ray->dir_y);
+
+    init_ray(player, ray);
+    calculate_step_and_sidedist(player, ray, &sideDistX, &sideDistY, deltaDistX, deltaDistY);
+    find_wall_hit(map, ray, &sideDistX, &sideDistY, deltaDistX, deltaDistY);
+    calculate_wall_dist(player, ray);
+}
 
 void	load_textures(t_mlx *mlx, t_game_data *data)
 {
