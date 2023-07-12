@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/13 03:39:52 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/13 05:38:01 by yshimoda         ###   ########.fr       */
 /* ************************************************************************** */
 
 #include "cub3d.h"
@@ -89,7 +89,7 @@ void cast_ray(t_map *map, t_player *player, t_ray *ray)
     calculate_wall_dist(player, ray);
 }
 
-void	load_textures(t_mlx *mlx, t_game_data *data)
+static void	load_textures(t_mlx *mlx, t_game_data *data)
 {
 	int i;
 	int	x;
@@ -118,75 +118,86 @@ void	make_color(t_game_data *data, long *f_color, long *c_color)
 	data->color_ceiling = c_color[0] * (16 * 16 * 16 * 16) + c_color[1] * (16 * 16) + c_color[2];
 }
 
-void	draw_wall_strip(t_mlx *mlx, t_ray *ray, size_t x, t_game_data *data)
+void init_drawing(t_ray *ray, t_mlx *mlx, t_draw *draw)
 {
-	size_t	y;
-	double	corrected_distance;
-	double	strip_height;
-	double	top_pixel;
-	double	bottom_pixel;
-	int		color;
+    draw->corrected_distance = ray->distance * cos(ray->angle - mlx->player.direction);
+    draw->strip_height = WINDOW_HEIGHT * 1 / (draw->corrected_distance);
+    draw->top_pixel = ((double)WINDOW_HEIGHT / 2.0) - (draw->strip_height / 2.0);
+    draw->bottom_pixel = ((double)WINDOW_HEIGHT / 2.0) + (draw->strip_height / 2.0);
+    if (draw->bottom_pixel > WINDOW_HEIGHT)
+        draw->bottom_pixel = WINDOW_HEIGHT;
+}
 
-	corrected_distance = ray->distance * cos(ray->angle - mlx->player.direction);
-	strip_height = WINDOW_HEIGHT * 1 / (corrected_distance);
-	top_pixel = ((double)WINDOW_HEIGHT / 2.0) - (strip_height / 2.0);
-	bottom_pixel = ((double)WINDOW_HEIGHT / 2.0) + (strip_height / 2.0);
-	if (bottom_pixel > WINDOW_HEIGHT)
-		bottom_pixel = WINDOW_HEIGHT;
+void determine_texture_number(t_ray *ray, t_draw *draw)
+{
+    if (ray->side && ray->dir_y < 0)
+        draw->texture_num = 0;
+    else if (ray->side && ray->dir_y >= 0)
+        draw->texture_num = 1;
+    else if (!ray->side && ray->dir_x > 0)
+        draw->texture_num = 2;
+    else
+        draw->texture_num = 3;
+}
 
-	make_color(data, data->f_color, data->c_color);
-	int texture_num;
+void draw_wall(t_mlx *mlx, size_t x, size_t y, t_draw *draw)
+{
+    double wallX;
+    if (mlx->ray.side == 0)
+        wallX = mlx->player.y + mlx->ray.distance * mlx->ray.dir_y;
+    else
+        wallX = mlx->player.x + mlx->ray.distance * mlx->ray.dir_x;
+    
+    wallX -= floor(wallX);
 
-	if (ray->side && ray->dir_y < 0)
-		texture_num = 0;
-	else if (ray->side && ray->dir_y >= 0)
-		texture_num = 1;
-	else if (!ray->side && ray->dir_x > 0)
-		texture_num = 2;
-	else
-		texture_num = 3;
+    int texture_x = (int)(wallX * (double)TILE_SIZE);
+    if (mlx->ray.side == 0 && mlx->ray.dir_x > 0)
+        texture_x = TILE_SIZE - texture_x - 1;
+    if (mlx->ray.side == 1 && mlx->ray.dir_y < 0)
+        texture_x = TILE_SIZE - texture_x - 1;
+    
+    texture_x = TILE_SIZE - texture_x - 1;
 
-	y = 0;
-	while (y < WINDOW_HEIGHT)
-	{
-		if (y < top_pixel)
-		{
-			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, data->color_ceiling);
-		}
-		else if (y > bottom_pixel)
-		{
-			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, data->color_floor);
-		}
-		else
-		{
+    int texture_y = (y - draw->top_pixel) * TILE_SIZE / draw->strip_height;
+    int color = *(int *)(mlx->texture[draw->texture_num].data + (texture_y * mlx->texture[draw->texture_num].size_l + texture_x * (mlx->texture[draw->texture_num].bpp / 8)));
 
+    mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, color);
+}
 
-	double wallX; // the exact position where the wall was hit
-		if (ray->side == 0) // If its a y-axis wall
-			wallX = mlx->player.y + ray->distance * ray->dir_y;
-		else // if its an x-axis wall
-			wallX = mlx->player.x + ray->distance * ray->dir_x;
-		wallX -= floor(wallX); // only keep the fractional part
+void draw_ceiling_and_floor(t_mlx *mlx, t_draw *draw, size_t x, size_t y)
+{
+    if (y < draw->top_pixel)
+    {
+        mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, mlx->data->color_ceiling);
+    }
+    else if (y > draw->bottom_pixel)
+    {
+        mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, mlx->data->color_floor);
+    }
+}
 
-		// x coordinate on the texture
-		int texture_x = (int)(wallX * (double)TILE_SIZE);
-		if (ray->side == 0 && ray->dir_x > 0)
-			texture_x = TILE_SIZE - texture_x - 1;
-		else if (ray->side == 1 && ray->dir_y < 0)
-			texture_x = TILE_SIZE - texture_x - 1;
-		texture_x = TILE_SIZE - texture_x - 1;
+void draw_wall_strip(t_mlx *mlx, t_ray *ray, size_t x, t_game_data *data)
+{
+    size_t y;
+	t_draw	draw;
 
- 		int texture_y = (y - top_pixel) * TILE_SIZE / strip_height;
+    init_drawing(ray, mlx, &draw);
+    make_color(data, data->f_color, data->c_color);
+	determine_texture_number(ray, &draw);
 
-		color = *(int *)(mlx->texture[texture_num].data + (texture_y * mlx->texture[texture_num].size_l + texture_x * (mlx->texture[texture_num].bpp / 8)));
-
-
-
-
- 			mlx_pixel_put(mlx->mlx_ptr, mlx->win_ptr, x, y, color);
-		}
-		y++;
-	}
+    y = 0;
+    while (y < WINDOW_HEIGHT)
+    {
+        if (y >= draw.top_pixel && y <= draw.bottom_pixel)
+        {
+            draw_wall(mlx, x, y, &draw);
+        }
+        else
+        {
+            draw_ceiling_and_floor(mlx, &draw, x, y);
+        }
+        y++;
+    }
 }
 
 void	ray_casting(t_mlx *mlx)
@@ -207,13 +218,13 @@ void	ray_casting(t_mlx *mlx)
 	}
 }
 
-int	draw(void *mlx)
+int	 ray_cast_and_draw(void *mlx)
 {
 	ray_casting(mlx);
 	return (0);
 }
 
-bool	is_start(t_player *player, char c, size_t x, size_t y)
+static bool	is_start(t_player *player, char c, size_t x, size_t y)
 {
 	if (c != 'N' && c != 'S' && c != 'E' && c != 'W')
 		return (false);
@@ -230,7 +241,7 @@ bool	is_start(t_player *player, char c, size_t x, size_t y)
 	return (true);
 }
 
-void	init_player(char **grid, t_player *player)
+static void	init_player(char **grid, t_player *player)
 {
 	size_t	x;
 	size_t	y;
@@ -262,7 +273,7 @@ void	printf_map(t_map *map)
 	}
 }
 
-void	init_map(t_map *map, t_map_node *map_node)
+static void	init_map(t_map *map, t_map_node *map_node)
 {
 	t_map_node	*head;
 	size_t		y;
@@ -340,7 +351,7 @@ static void handle_move_key(int key_num, t_mlx *mlx)
 		new_x = mlx->player.x + MOVE_SPEED * sin(mlx->player.direction);
 		new_y = mlx->player.y - MOVE_SPEED * cos(mlx->player.direction);
 	}
-	else // KEY_D
+	else
 	{
 		new_x = mlx->player.x - MOVE_SPEED * sin(mlx->player.direction);
 		new_y = mlx->player.y + MOVE_SPEED * cos(mlx->player.direction);
@@ -357,7 +368,7 @@ static void handle_rotate_key(int key_num, t_mlx *mlx)
 		if (mlx->player.direction < 0)
 			mlx->player.direction += 2 * M_PI;
 	}
-	else // KEY_RIGHT
+	else
 	{
 		mlx->player.direction += 10 * (M_PI / 180);
 		if (mlx->player.direction > 2 * M_PI)
@@ -381,7 +392,7 @@ void	mlx_func(t_game_data *data)
 	t_mlx	mlx;
 
 	init_mlx(&mlx, data);
-  	mlx_loop_hook(mlx.mlx_ptr, draw, &mlx);
+  	mlx_loop_hook(mlx.mlx_ptr, ray_cast_and_draw, &mlx);
  	mlx_hook(mlx.win_ptr, 2, 1L << 0, event_key_press, &mlx);
  	mlx_hook(mlx.win_ptr, 17, 1L << 2, destroy_mlx, &mlx);
 	mlx_loop(mlx.mlx_ptr);

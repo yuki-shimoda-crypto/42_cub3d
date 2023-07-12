@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/13 03:35:29 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/13 05:34:13 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ typedef struct s_cub_file_node		t_cub_file_node;
 typedef struct s_cub_file_status	t_cub_file_status;
 typedef struct s_cub_file_count		t_cub_file_count;
 typedef struct s_queue				t_queue;
+typedef struct s_draw				t_draw;
 typedef enum e_skip					t_skip;
 typedef enum e_input				t_input;
 
@@ -190,6 +191,15 @@ struct	s_queue
 	size_t	x;
 	size_t	y;
 	t_queue	*next;
+};
+
+struct	s_draw
+{
+    double	corrected_distance;
+    double	strip_height;
+    double	top_pixel;
+    double	bottom_pixel;
+	int		texture_num;
 };
 
 enum	e_skip
