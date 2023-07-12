@@ -6,13 +6,15 @@
 /*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 19:28:11 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/12 14:09:32 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/12 14:12:46 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 #include "mlx.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
 
 // static void	init_game_data(t_game_data *data)
 // {
@@ -45,11 +47,8 @@
 // 	return (0);
 // }
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 
-#define TILE_SIZE		48
+#define TILE_SIZE		64
 #define MAP_HEIGHT		16
 #define MAP_WIDTH		16
 
