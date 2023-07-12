@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yshimoda <yshimoda@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/11 09:16:20 by yshimoda         ###   ########.fr       */
+/*   Updated: 2023/07/12 15:38:24 by enogaWa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,5 +180,103 @@ bool			can_move_up(t_map_node *map, size_t x, size_t y);
 // safe mlx
 void	*safe_mlx_new_window(void *mlx_ptr, int size_x, int size_y, char *title);
 void	*safe_mlx_init(void);
+
+
+
+#define TILE_SIZE		64
+#define MAP_HEIGHT		16
+#define MAP_WIDTH		16
+
+#define WINDOW_WIDTH	(MAP_WIDTH * TILE_SIZE)
+#define WINDOW_HEIGHT	(MAP_HEIGHT * TILE_SIZE)
+
+#define MINIMAP_SCALE	4
+#define MINIMAP_TILE	(TILE_SIZE / MINIMAP_SCALE)
+#define MINIMAP_WIDTH	(WINDOW_WIDTH / MINIMAP_SCALE)
+#define MINIMAP_HEIGHT	(WINDOW_HEIGHT / MINIMAP_SCALE)
+
+#define PLAYER_SIZE		(TILE_SIZE / 4)
+
+#define SPACE			'0'
+#define WALL			'1'
+#define PLAYER			'2'
+
+// minimap
+#define COLOR_SPACE		0xFFFFFF
+#define COLOR_WALL		0x777777
+#define COLOR_PLAYER	0xFF0000
+
+// cub3d
+#define COLOR_SKY		0xFFFFFF
+#define COLOR_GROUND	0x000000
+#define COLOR_NORTH		0x111111
+#define COLOR_SOUTH		0x333333
+#define COLOR_EAST		0x555555
+#define COLOR_WEST		0x777777
+#define COLOR_RAY		0x0000FF
+
+#define NORTH			(270 * (M_PI / 180))
+#define SOUTH			(90 * (M_PI / 180))
+#define EAST			(0 * (M_PI / 180))
+#define WEST			(180 * (M_PI / 180))
+
+#define FOV				(60 * (M_PI / 180))
+
+#define MOVE_SPEED		0.1
+
+typedef struct s_img	t_img;
+typedef struct s_map	t_map;
+typedef struct s_player	t_player;
+typedef struct s_ray	t_ray;
+typedef struct s_mlx	t_mlx;
+
+struct s_img
+{
+	void	*img;
+	char	*data;
+	int		bpp;
+	int		size_l;
+	int		endian;
+};
+
+struct s_map
+{
+	char	**grid;
+	size_t	width;
+	size_t	height;
+};
+
+// fov: field of view
+struct s_player
+{
+	double	x;
+	double	y;
+	double	direction;
+	double	fov;
+};
+
+struct s_ray
+{
+	double	angle;
+	double	distance;
+	bool	hit_wall;
+	bool	hit_vertical;
+	int		side;
+	double	dir_x;
+	double	dir_y;
+	int		step_x;
+	int		step_y;
+};
+
+struct s_mlx
+{
+	void		*mlx_ptr;
+	void		*win_ptr;
+	t_map		map;
+	t_player	player;
+	t_ray		ray;
+	t_img		texture[4];
+};
+
 
 #endif
