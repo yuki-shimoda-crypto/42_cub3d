@@ -6,7 +6,7 @@
 /*   By: enogaWa <enogawa@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 16:44:35 by yshimoda          #+#    #+#             */
-/*   Updated: 2023/07/13 06:21:35 by enogaWa          ###   ########.fr       */
+/*   Updated: 2023/07/13 09:35:35 by yshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,21 +42,21 @@
 #  define KEY_D 'd'
 # endif
 
-#define TILE_SIZE		64
-#define WINDOW_WIDTH	800
-#define WINDOW_HEIGHT	800
+# define TILE_SIZE		64
+# define WINDOW_WIDTH	800
+# define WINDOW_HEIGHT	800
 
-#define WALL			'1'
+# define WALL			'1'
 
 // direction
-#define NORTH			(270 * (M_PI / 180))
-#define SOUTH			(90 * (M_PI / 180))
-#define EAST			(0 * (M_PI / 180))
-#define WEST			(180 * (M_PI / 180))
+# define NORTH			4.71238
+# define SOUTH			1.57079
+# define EAST			0
+# define WEST			3.14159
 
-#define FOV				(60 * (M_PI / 180))
+# define FOV			1.04719
 
-#define MOVE_SPEED		0.3
+# define MOVE_SPEED		0.3
 
 typedef struct s_game_data			t_game_data;
 typedef struct s_map_node			t_map_node;
@@ -68,11 +68,11 @@ typedef struct s_draw				t_draw;
 typedef enum e_skip					t_skip;
 typedef enum e_input				t_input;
 
-typedef struct s_img	t_img;
-typedef struct s_map	t_map;
-typedef struct s_player	t_player;
-typedef struct s_ray	t_ray;
-typedef struct s_mlx	t_mlx;
+typedef struct s_img				t_img;
+typedef struct s_map				t_map;
+typedef struct s_player				t_player;
+typedef struct s_ray				t_ray;
+typedef struct s_mlx				t_mlx;
 
 struct s_img
 {
@@ -127,7 +127,6 @@ struct s_mlx
 	t_img		texture[4];
 	t_game_data	*data;
 };
-
 
 // save all game data after checking
 struct	s_game_data
@@ -191,10 +190,10 @@ struct	s_queue
 
 struct	s_draw
 {
-    double	corrected_distance;
-    double	strip_height;
-    double	top_pixel;
-    double	bottom_pixel;
+	double	corrected_distance;
+	double	strip_height;
+	double	top_pixel;
+	double	bottom_pixel;
 	int		texture_num;
 };
 
@@ -217,9 +216,11 @@ int				destroy_mlx(t_mlx *mlx);
 void			init_mlx(t_mlx *mlx, t_game_data *data);
 void			init_map(t_map *map, t_map_node *map_node);
 void			init_player(char **grid, t_player *player);
-void			change_move_value(t_map *map, t_player *player, double new_x, double new_y);
+void			change_move_value(t_map *map,
+					t_player *player, double new_x, double new_y);
 int				ray_cast_and_draw(void *mlx);
-void			draw_wall_strip(t_mlx *mlx, t_ray *ray, size_t x, t_game_data *data);
+void			draw_wall_strip(t_mlx *mlx,
+					t_ray *ray, size_t x, t_game_data *data);
 void			load_textures(t_mlx *mlx, t_game_data *data);
 void			make_color(t_game_data *data, long *f_color, long *c_color);
 void			cast_ray(t_map *map, t_player *player, t_ray *ray);
@@ -266,8 +267,8 @@ bool			can_move_down(t_map_node *map, size_t x, size_t y);
 bool			can_move_up(t_map_node *map, size_t x, size_t y);
 
 // safe mlx
-void	*safe_mlx_new_window(void *mlx_ptr, int size_x, int size_y, char *title);
-void	*safe_mlx_init(void);
-
+void			*safe_mlx_new_window(void *mlx_ptr,
+					int size_x, int size_y, char *title);
+void			*safe_mlx_init(void);
 
 #endif
