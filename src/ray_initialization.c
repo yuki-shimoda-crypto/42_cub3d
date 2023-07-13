@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <float.h>
 #include "cub3d.h"
 
 static void	init_ray(t_player *player, t_ray *ray)
@@ -22,8 +23,14 @@ static void	init_ray(t_player *player, t_ray *ray)
 	ray->map_y = (int)player->y;
 	ray->dir_x = cos(ray->angle);
 	ray->dir_y = sin(ray->angle);
-	ray->delta_dist_x = fabs(1 / ray->dir_x);
-	ray->delta_dist_y = fabs(1 / ray->dir_y);
+	if (ray->dir_x == 0)
+		ray->delta_dist_x = DBL_MAX;
+	else
+		ray->delta_dist_x = fabs(1 / ray->dir_x);
+	if (ray->dir_y == 0)
+		ray->delta_dist_y = DBL_MAX;
+	else
+		ray->delta_dist_y = fabs(1 / ray->dir_y);
 	ray->hit_wall = false;
 }
 
